@@ -14,7 +14,7 @@
     <h1 class="poi_title">位置迁移调试demo</h1>
     <div class="poi_t">
       <div class="poi_field poi_field_first" style="margin-left:20px;">
-           商圈/POI: <input id="search_lng_lat" type="text" class="text" value="中关村">
+           商圈/POI: <input id="search_lng_lat" type="text" class="text" value="清河">
            <ul class="ui-autocomplete" id="ui-id-1" tabindex="0">
              <li></li>
              <li></li>
@@ -30,17 +30,17 @@
       </div>
       <input type="button" class="input_btn" value="查 询" id="poi_search"/>
       <div class="poi_field" style="margin-left:50px;margin-right:30px;">
-             城市：<input type="text" class="cityinput" id="city_login" value="北京市">
+             城市：<input type="text"  id="city" value="北京市">
        </div>
        <div class="poi_field">
-             时间：<select id="time_se;">
-                        <option value="全天 00：00 - 24：00">全天 00：00 - 24：00</option>
-                        <option value="凌晨 00：00 - 07：00">凌晨 00：00 - 07：00</option>
-                        <option value="早上 07：00 - 10：00">早上 07：00 - 10：00</option>
-                        <option value="上午 10：00 - 12：00">上午 10：00 - 12：00</option>
-                        <option value="中午 12：00 - 14：00">中午 12：00 - 14：00</option>
-                        <option value="下午 14：00 - 19：00">下午 14：00 - 19：00</option>
-                        <option value="晚上 19：00 - 24：00">晚上 19：00 - 24：00</option>
+             时间：<select id="time_select" class="time_select">
+                        <option value="1">全天 00：00 - 24：00</option>
+                        <option value="2">凌晨 00：00 - 07：00</option>
+                        <option value="3">早上 07：00 - 10：00</option>
+                        <option value="4">上午 10：00 - 12：00</option>
+                        <option value="5">中午 12：00 - 14：00</option>
+                        <option value="6">下午 14：00 - 19：00</option>
+                        <option value="7">晚上 19：00 - 24：00</option>
                   </select>
        </div>
    </div>
@@ -48,12 +48,12 @@
    <div id="poi_m">
        <div class="poi_m_l" id="nav">
           <div class="nav_float">
-               <input class="input_icon" name="input_checkbox" type="checkbox" id="icon_s" value="商圈"/><label for="icon_s">商圈</label>
-               <input class="input_icon" name="input_checkbox" type="checkbox" id="icon_p" value="POI" style="margin-left:12px;"/><label for="icon_p">POI</label>
+               <input class="input_icon" name="input_checkbox" type="checkbox" id="icon_s" value="商圈" checked/><label for="icon_s">商圈</label>
+               <input class="input_icon" name="input_checkbox" type="checkbox" id="icon_p" value="POI" checked style="margin-left:12px;"/><label for="icon_p">POI</label>
           </div>
           <div id="nav_table_box">
                   <div class="nav_con clearfix">
-                      <table width="100%" id="">
+                      <table width="100%" id="table_start">
                         <thead>
                            <tr>
                              <th class="th_blue" colspan="3">出发</th>
@@ -65,155 +65,12 @@
                            </tr>
                         </thead>
                         <tbody>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                            <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                            <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-                           <tr>
-                             <td></td>
-                             <td></td>
-                             <td></td>
-                           </tr>
-
+                          
+                           
                         </tbody>
                  </table>
-                 <table width="100%" id="" class="table_right">
+                 <div class="table_line"></div>
+                 <table width="100%" class="table_right" id="table_end">
                         <thead>
                            <tr>
                              <th class="th_blue" colspan="3">到达</th>
@@ -225,126 +82,8 @@
                            </tr>
                         </thead>
                         <tbody>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
-                           <tr>
-                             <td>北京</td>
-                             <td>北京</td>
-                             <td>北京</td>
-                           </tr>
+                          
+                         
                         </tbody>
                  </table>
             </div>
@@ -353,11 +92,12 @@
      </div>
       <div class="poi_m_l" id="ditu">
          <div class="ditu_float">
-               <input class="input_icon" name="input_checkbox" id="icon_q" type="checkbox"  value="起点"/><label for="icon_q">起点</label>
-               <input class="input_icon" name="input_checkbox" id="icon_z" type="checkbox"  value="终点" style="margin-left:12px;"/><label for="icon_z">终点</label>
+               <input class="input_icon" name="input_checkbox" id="icon_q" type="checkbox" checked value="起点"/><label for="icon_q">起点</label>
+               <input class="input_icon" name="input_checkbox" id="icon_z" type="checkbox" checked value="终点" style="margin-left:12px;"/><label for="icon_z">终点</label>
           </div>
           <div id="root">
-                  <div id="ajax_tip">此定位点没有小伙伴来过哦。</div>
+                 <!--  <div id="ajax_tip">此定位点暂时没有相关数据哦。</div> -->
+                   <div id="ajax_tip">暂时用的是同一个数据，基本定位在清河附近</div>
                   <div id="ajax_before_tip"><img src="images/load.jpg" width="80px" height="80px" alt="" /></div>
                   
           </div>
@@ -369,8 +109,8 @@
                <span>图例：&nbsp;&nbsp;&nbsp;</span>
                <ul>
                   <li><span class="iconfont"><img src="images/marker_poi.png" width="10px" height="14px" alt="" /></span>&nbsp;查询点&nbsp;&nbsp;</li>
-                  <li><span class="iconfont"><img src="images/marker_red.png" width="10px" height="14px" alt="" /></span>&nbsp;起点&nbsp;&nbsp;</li>
-                  <li><span class="iconfont"><img src="images/marker_green.png" width="10px" height="14px" alt="" /></span>&nbsp;终点</li>
+                  <li><span class="iconfont"><img src="images/marker_poi_start.png" width="10px" height="14px" alt="" /></span>&nbsp;起点&nbsp;&nbsp;</li>
+                  <li><span class="iconfont"><img src="images/marker_poi_end.png" width="10px" height="14px" alt="" /></span>&nbsp;终点</li>
                </ul>
            </div>
       </div>

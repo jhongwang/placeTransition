@@ -93,6 +93,16 @@ label{
   background-color: #fff;
   border:1px solid #ccc;
 }
+.nav_con{
+  height: 100%;
+}
+.table_line{
+  width: 1px;
+  height:100%;
+  background-color: #ccc;
+  float: left;
+}
+
 #nav_table_box{
   height: 100%;
   overflow: hidden;
@@ -130,10 +140,10 @@ label{
 #nav table.table_right{
   float: right;
 }
-#nav table.table_right tbody tr td:last-child{
+#nav table tbody tr td:last-child{
    border:none;
 }
-#nav table.table_right thead tr th:last-child{
+#nav table thead tr th:last-child{
    border-right:none;
 }
 #poi_m{
@@ -316,6 +326,9 @@ table tr td{
   background-image: none;
   background-color: #fff;
 } 
+.time_select{
+  min-width:164px;
+}
 
 
 
