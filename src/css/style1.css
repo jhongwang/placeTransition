@@ -331,4 +331,30 @@ table tr td{
 }
 
 
-
+i.shang{
+  background:#f27271;
+  margin-right:8px;
+  color:#fff;
+  font-style:normal;
+  display:inline-block;
+  height:12px;
+  width:12px;
+  border-radius:2px;
+  text-align:center;
+  line-height:12px;
+  font-size:10px;
+  font-family: Arial;
+}
+i.poi{
+  background:#6cbc43;
+  color:#fff;
+  font-style:normal;
+  display:inline-block;
+  height:12px;
+  width:12px;
+  border-radius:2px;
+  text-align:center;
+  line-height:12px;
+  font-size:10px;
+  font-family: Arial;
+}

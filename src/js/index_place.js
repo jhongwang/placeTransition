@@ -288,7 +288,7 @@ function draw_data(){
     }
   draw_marker();
 }
-function draw_data_other_time(target){
+function draw_data_other_time(target){//筛选有时间点的数据
     clearDitu();
     start_busi = [];
     start_poi = [];
@@ -354,13 +354,13 @@ function creatTable_start(arr_busi,arr_poi){
   for(var i = 0; i<arr_busi.length; i++){
      iHtml += '<tr>';
      iHtml += '<td>'+arr_busi[i].class_code+'</td>';
-     iHtml += '<td>'+arr_busi[i].name+'</td>';
+     iHtml += '<td>'+arr_busi[i].name+'&nbsp;<i class="shang">B</i></td>';
      iHtml += '<td>'+arr_busi[i].time_count+'</td>';
   }
   for(var i = 0; i<arr_poi.length; i++){
      iHtml += '<tr>';
      iHtml += '<td>'+arr_poi[i].class_code+'</td>';
-     iHtml += '<td>'+arr_poi[i].name+'</td>';
+     iHtml += '<td>'+arr_poi[i].name+'&nbsp;<i class="poi">P</i></td>';
      iHtml += '<td>'+arr_poi[i].time_count+'</td>';
   }
   $('#table_start tbody').html(iHtml);
@@ -371,13 +371,13 @@ function creatTable_end(arr_busi,arr_poi){
   for(var i = 0; i<arr_busi.length; i++){
      iHtml += '<tr>';
      iHtml += '<td>'+arr_busi[i].class_code+'</td>';
-     iHtml += '<td>'+arr_busi[i].name+'</td>';
+     iHtml += '<td>'+arr_busi[i].name+'&nbsp;<i class="shang">B</i></td>';
      iHtml += '<td>'+arr_busi[i].time_count+'</td>';
   }
   for(var i = 0; i<arr_poi.length; i++){
      iHtml += '<tr>';
      iHtml += '<td>'+arr_poi[i].class_code+'</td>';
-     iHtml += '<td>'+arr_poi[i].name+'</td>';
+     iHtml += '<td>'+arr_poi[i].name+'&nbsp;<i class="poi">P</i></td>';
      iHtml += '<td>'+arr_poi[i].time_count+'</td>';
   }
   $('#table_end tbody').html(iHtml);
