@@ -136,6 +136,7 @@ label{
 } */
 #nav table tbody tr td{
    border-right:1px solid #ccc;
+   cursor: pointer;
 }
 #nav table.table_right{
   float: right;
@@ -180,6 +181,7 @@ table{
   border-collapse:collapse; 
   font-family:"微软雅黑"; 
   border-spacing:0;
+  height: 100%;
 }
 table tbody{
   background: #f7f7f7;
@@ -196,7 +198,7 @@ table tr th{
 }
 table tr td{
   background: #fff;
-  padding:7px 0px;
+  /* padding:7px 0px; */
   font-size:13px;   
   color:#111;  
   font-family: '微软雅黑';
@@ -328,11 +330,12 @@ table tr td{
 } 
 .time_select{
   min-width:164px;
+  cursor: pointer;
 }
 
 
 i.shang{
-  background:#f27271;
+  background:#f47920;
   margin-right:8px;
   color:#fff;
   font-style:normal;
@@ -346,7 +349,7 @@ i.shang{
   font-family: Arial;
 }
 i.poi{
-  background:#6cbc43;
+  background:#009ad6;
   color:#fff;
   font-style:normal;
   display:inline-block;

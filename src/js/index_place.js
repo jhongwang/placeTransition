@@ -1,45 +1,35 @@
 $(function(){
 var nav_w=$('#nav').width();
 $('#root').css('margin-right',nav_w+72+'px');
-initPage(116.31649,39.98389);
+initPage(116.30752,39.98406);
 var location_data=window.location.hash;
 if(location_data==''){
-  //poi_list(113.90582084655762,22.47189502276308,500);
+   $('#search_lng_lat').val(cur_md_name);
+   console.log(cur_md)
+   console.log(cur_time)
+   poi_list();
 }
 else{
   var hashdata=GetRequest();
-  var lng_=hashdata.point_x;
-  var lat_=hashdata.point_y;
-  $('#search_lng_lat').val(''+lng_+':'+lat_+'');
+  cur_md=hashdata.md;
+  cur_time=hashdata.time;
+  cur_md_name=hashdata.md_name;
+  cur_lng=hashdata.lng;
+  cur_lat=hashdata.lat;
+  $('#search_lng_lat').val(cur_md_name);
+  $('#time_select').val(cur_time);
+  poi_list();
 }
 //搜索查询事件
 $('#poi_search').click(function(){
    $('#ui-id-1').css('display','none');
    var lnglat_=$('#search_lng_lat').val();
    lnglat_=lnglat_.replace(/\s/g, '');
-   var indexof1=lnglat_.indexOf(',');
-   var indexof2=lnglat_.indexOf(':');
-   if(indexof2==-1&&indexof1==-1){
-     poi_search_wenzi(lnglat_);
-   }else{
-      var pos;
-      if(lnglat_.indexOf(',')!==-1){
-         pos=lnglat_.split(",");
-      }
-      if(lnglat_.indexOf(':')!==-1){
-         pos=lnglat_.split(":");
-      }
-     var lat = pos[1];
-     var lng = pos[0];
-     cur_lng = lng;
-     cur_lat = lat;
-    // poi_list(lng,lat,radius_);
-   }
+   poi_search_wenzi(lnglat_);
 })
 $('#time_select').change(function(){
-  data_cur={};
-  jQuery.extend(true,data_cur,data_get);
-  time_selected_show();
+  cur_time = $(this).val();
+  poi_list();
 })
 $('#search_lng_lat').click(function(){
    $(this).select();
@@ -70,6 +60,7 @@ $('#ui-id-1 li').click(function(){
    cur_lng = lng;
    cur_lat = lat;
    cur_md =$(this).attr('class').split(' ')[0];
+   cur_md_name=li_selected_html_;
    poi_list();
 })
 $('#ui-id-1 li').mouseover(function(){
@@ -129,7 +120,10 @@ $('#ui-id-1 li').mouseover(function(){
 document.onkeydown = function (e) {  
     if (!e) e = window.event;  
     if ((e.keyCode || e.which) == 13) {  
-       // poi_list(zuixin_daoguan_arr,zuixin_buji_arr,zuixin_guai_arr);
+       $('#ui-id-1').css('display','none');
+       var lnglat_=$('#search_lng_lat').val();
+       lnglat_=lnglat_.replace(/\s/g, '');
+       poi_search_wenzi(lnglat_);
     }  
 } 
 
@@ -142,30 +136,28 @@ jQuery.ajaxSetup({
 });
 var checkbox_selected;//表示checkbox选择了哪些 是个数组
 var cur_city = '北京';//表示当前选中城市 暂时只有北京
-var start_busi;//当前筛选出来的起点 商圈
-var start_poi;//当前筛选出来的起点 POI
-var end_busi;//当前筛选出来的终点 商圈
-var end_poi;//当前筛选出来的终点 POI
-var cur_md = 3606955108245080331;//当前选择点的md
-var cur_lng = 116.31617;//当前选择点的lng
-var cur_lat = 40.04194;//当前选择点的lat
+var start_lists;//当前筛选出来的起点
+var end_lists;//当前筛选出来的终点
+var cur_md = "3629720141162880123";
+var cur_md_name='中国技术交易大厦';
+var cur_time=0;
+var cur_lng = 116.30752;//当前选择点的lng
+var cur_lat = 39.98406;//当前选择点的lat
 var data_get;//获取ajax获取下来的数据 这个只有展示不可给改
 var data_cur={};//把当前的从后台获取的数据放在这里 可以更改
-jQuery.extend(true,data_cur,data_get);
+//jQuery.extend(true,data_cur,data_get);
 
 function initPage(lng,lat) {
       MapHelper.install(document.getElementById('root'), {
         lat:lat,
         lng:lng,
         onPoiChange: function(lng_, lat_) {
-          MapHelper.setMarkerPostion(lat_, lng_);
-          $('#search_lng_lat').val('中关村');
-
+          //MapHelper.setMarkerPostion(lat_, lng_);
          // ajax_poilist.abort();
           //poi_list(lng_,lat_,raidus_);
          }
       });
-      poi_list();//初始化
+     // poi_list();//初始化
 
 }
 function checked_fun(){
@@ -175,7 +167,7 @@ function checked_fun(){
         checkbox_selected.push($(this).context.value);
      }
    })
-  time_selected_show();
+   draw_data();
 }
 function cur_city_code(key){
   $.ajax({
@@ -253,141 +245,139 @@ function clearTable(){
 
 function draw_data(){
     clearDitu();
-    start_busi = [];
-    start_poi = [];
-    end_busi = [];
-    end_poi = [];
+    start_lists = [];
+    end_lists = [];
     //商圈 POI 起点 终点
     if(checkbox_selected.indexOf('起点') != -1){
-       if(checkbox_selected.indexOf('商圈') != -1){
-          var arr = data_cur.start_info.busi_list;
+       if(checkbox_selected.indexOf('商圈') != -1 && checkbox_selected.indexOf('POI') != -1){
+         var arr = data_cur.start_info.slice(0,10);
           for(var i =0;i< arr.length; i++){
-             start_busi.push(arr[i]);
+             start_lists.push(arr[i]);
           }
-       }
-       if(checkbox_selected.indexOf('POI') != -1){
-          var arr = data_cur.start_info.name_list;
+       }else{
+         if(checkbox_selected.indexOf('商圈') != -1){
+          var arr = data_cur.start_info.slice(0,10);
           for(var i =0;i< arr.length; i++){
-             start_poi.push(arr[i]);
+             var classCode = arr[i].class_code.substring(0,4);
+             if(classCode == 2616){
+                start_lists.push(arr[i]);
+             }
           }
+         }
+         if(checkbox_selected.indexOf('POI') != -1){
+           var arr = data_cur.start_info.slice(0,10);
+          for(var i =0;i< arr.length; i++){
+             var classCode = arr[i].class_code.substring(0,4);
+             if(classCode != 2616){
+                start_lists.push(arr[i]);
+             }
+          }
+         }
        }
+       
     }
     if(checkbox_selected.indexOf('终点') != -1){
-       if(checkbox_selected.indexOf('商圈') != -1){
-          var arr = data_cur.end_info.busi_list;
+       if(checkbox_selected.indexOf('商圈') != -1 && checkbox_selected.indexOf('POI') != -1){
+         var arr = data_cur.end_info.slice(0,10);
           for(var i =0;i< arr.length; i++){
-             end_busi.push(arr[i]);
+             end_lists.push(arr[i]);
           }
-       }
-       if(checkbox_selected.indexOf('POI') != -1){
-           var arr = data_cur.end_info.name_list;
+       }else{
+         if(checkbox_selected.indexOf('商圈') != -1){
+          var arr = data_cur.end_info.slice(0,10);
           for(var i =0;i< arr.length; i++){
-             end_poi.push(arr[i]);
+             var classCode = arr[i].class_code.substring(0,4);
+             if(classCode == 2616){
+                end_lists.push(arr[i]);
+             }
           }
+         }
+         if(checkbox_selected.indexOf('POI') != -1){
+           var arr = data_cur.end_info.slice(0,10);
+          for(var i =0;i< arr.length; i++){
+             var classCode = arr[i].class_code.substring(0,4);
+             if(classCode != 2616){
+                end_lists.push(arr[i]);
+             }
+          }
+         }
        }
     }
   draw_marker();
 }
-function draw_data_other_time(target){//筛选有时间点的数据
-    clearDitu();
-    start_busi = [];
-    start_poi = [];
-    end_busi = [];
-    end_poi = [];
-    //商圈 POI 起点 终点
-    if(checkbox_selected.indexOf('起点') != -1){
-       if(checkbox_selected.indexOf('商圈') != -1){
-          var arr = data_cur.start_info.busi_list;
-          for(var i =0;i< arr.length; i++){
-            if(arr[i].time_count == target){
-             start_busi.push(arr[i]);
-            }
-          }
-       }
-       if(checkbox_selected.indexOf('POI') != -1){
-          var arr = data_cur.start_info.name_list;
-          for(var i =0;i< arr.length; i++){
-             if(arr[i].time_count == target){
-                start_poi.push(arr[i]);
-             }
-             
-          }
-       }
-    }
-    if(checkbox_selected.indexOf('终点') != -1){
-       if(checkbox_selected.indexOf('商圈') != -1){
-          var arr = data_cur.end_info.busi_list;
-          for(var i =0;i< arr.length; i++){
-             if(arr[i].time_count == target){
-              end_busi.push(arr[i]);
-             }
-             
-          }
-       }
-       if(checkbox_selected.indexOf('POI') != -1){
-           var arr = data_cur.end_info.name_list;
-          for(var i =0;i< arr.length; i++){
-             if(arr[i].time_count == target){
-               end_poi.push(arr[i]);
-             }
-            
-          }
-       }
-    }
-  draw_marker();
-}
+
 function draw_marker(){
-  //console.log(start_busi)
-  //console.log(start_poi)
-  //console.log(end_busi)
-  //console.log(end_poi)
-  MapHelper.setMarkers_poi(start_busi,'商圈');
-  MapHelper.setMarkers_poi(start_poi,'POI');
-  MapHelper.setMarkers_poi_radio(end_busi,'商圈');
-  MapHelper.setMarkers_poi_radio(end_poi,'POI');
-  creatTable_start(start_busi,start_poi);
-  creatTable_end(end_busi,end_poi);
+  MapHelper.setMarkers_poi(start_lists.slice(0,10));
+  MapHelper.setMarkers_poi_radio(end_lists.slice(0,10));
+  creatTable_start(start_lists.slice(0,10),end_lists.slice(0,10));
 }
-function creatTable_start(arr_busi,arr_poi){
+function creatTable_start(start_list,end_list){
+  console.log(start_list.length)
+  console.log(end_list.length)
   $('#table_start tbody').html('');
-  var iHtml = '';
-  for(var i = 0; i<arr_busi.length; i++){
-     iHtml += '<tr>';
-     iHtml += '<td>'+arr_busi[i].class_code+'</td>';
-     iHtml += '<td>'+arr_busi[i].name+'&nbsp;<i class="shang">B</i></td>';
-     iHtml += '<td>'+arr_busi[i].time_count+'</td>';
-  }
-  for(var i = 0; i<arr_poi.length; i++){
-     iHtml += '<tr>';
-     iHtml += '<td>'+arr_poi[i].class_code+'</td>';
-     iHtml += '<td>'+arr_poi[i].name+'&nbsp;<i class="poi">P</i></td>';
-     iHtml += '<td>'+arr_poi[i].time_count+'</td>';
-  }
-  $('#table_start tbody').html(iHtml);
-}
-function creatTable_end(arr_busi,arr_poi){
   $('#table_end tbody').html('');
   var iHtml = '';
-  for(var i = 0; i<arr_busi.length; i++){
+  var iHtml2 = '';
+  for(var i = 0; i<start_list.length; i++){
      iHtml += '<tr>';
-     iHtml += '<td>'+arr_busi[i].class_code+'</td>';
-     iHtml += '<td>'+arr_busi[i].name+'&nbsp;<i class="shang">B</i></td>';
-     iHtml += '<td>'+arr_busi[i].time_count+'</td>';
+     iHtml += '<td>'+(i+1)+'</td>';
+     var classCode = start_list[i].class_code.substring(0,4);
+     if(classCode == 2616){
+        iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="shang">B</i></td>';
+     }else{
+        iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="poi">P</i></td>';
+     }
+     iHtml += '<td>'+start_list[i].time_count+'</td>';
   }
-  for(var i = 0; i<arr_poi.length; i++){
-     iHtml += '<tr>';
-     iHtml += '<td>'+arr_poi[i].class_code+'</td>';
-     iHtml += '<td>'+arr_poi[i].name+'&nbsp;<i class="poi">P</i></td>';
-     iHtml += '<td>'+arr_poi[i].time_count+'</td>';
+  for(var i = 0; i<end_list.length; i++){
+     iHtml2 += '<tr>';
+     iHtml2 += '<td>'+(i+1)+'</td>';
+     var classCode = end_list[i].class_code.substring(0,4);
+     if(classCode == 2616){
+        iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="shang">B</i></td>';
+     }else{
+        iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="poi">P</i></td>';
+     }
+     iHtml2 += '<td>'+end_list[i].time_count+'</td>';
   }
-  $('#table_end tbody').html(iHtml);
+  $('#table_start tbody').html(iHtml);
+  $('#table_end tbody').html(iHtml2);
+  li_click_start('table_start');
+  li_click_end('table_end');
 }
-function time_selected_show(){
-  var target = $('#time_select').val();
-  if(target == 1){
-     draw_data();
-  }else{
-     draw_data_other_time(target)
+function clear_alltd(){
+  var all_td=document.getElementsByTagName('td');
+  for(var i=0;i<all_td.length;i++ ){
+     all_td[i].style.background='#fff';
+  }
+}
+
+function li_click_start(id){
+  var aLi=document.getElementById(id).tBodies[0].getElementsByTagName('tr');
+  for(var i=0;i<aLi.length;i++){
+     aLi[i].index=i;
+     aLi[i].onclick=function(){
+         clear_alltd();
+         for(var k=0;k<this.childNodes.length;k++){
+            this.childNodes[k].style.background='#eaeaea';
+         }
+         MapHelper.set_poi_animation(this.index);
+         return false;
+     }
+  }
+}
+function li_click_end(id){
+  var aLi=document.getElementById(id).tBodies[0].getElementsByTagName('tr');
+  for(var i=0;i<aLi.length;i++){
+     aLi[i].index=i;
+     aLi[i].onclick=function(){
+         clear_alltd();
+         for(var k=0;k<this.childNodes.length;k++){
+            this.childNodes[k].style.background='#eaeaea';
+         }
+         MapHelper.set_poi_animation_radio(this.index);
+         return false;
+     }
   }
 }
 function GetQueryString(name) {
@@ -409,47 +399,56 @@ function GetRequest() {
 }
 
 function poi_list(){
-    $('#ajax_tip').css('display','block');
-    setTimeout(function(){
-      $('#ajax_tip').css('display','none');
-    },1000);
+  console.log('poi_list')
+  console.log(cur_md_name)
+  console.log(cur_md)
+  console.log(cur_time)
+  console.log(cur_lng)
+  console.log(cur_lat)
+
     clearDitu();
     clearTable();
     MapHelper.setCenter(cur_lat,cur_lng);
     MapHelper.setMarkerPostion(cur_lat,cur_lng);
-    //data_get=[];
-    //$('#ajax_tip').css('display','none');
-
-   data_get={end_info:{"busi_list": [{"md": "5176743892522660139", "name": "东关", "point_x": "116.643755", "point_y": "40.314403", "class_code": "261612", "time": "2016-08-01 01:25:18", "time_count": "2"}], "id_type": "9997096193932611952|start", "name_list": [{"md": "9997096193932611952", "name": "东关(一区)", "point_x": "116.642755", "point_y": "40.314401", "class_code": "281010", "time": "2016-08-01 01:25:18", "time_count": "6"}]},start_info:{"busi_list": [{"md": "3606955108245080331", "name": "清河", "point_x": "116.346", "point_y": "40.0285", "class_code": "261612", "time": "2016-08-01 00:52:56", "time_count": "5"}], "id_type": "9999716292397959034|start", "name_list": [{"md": "13961079153525193356", "name": "清缘里", "point_x": "116.356609", "point_y": "40.029031", "class_code": "281010", "time": "2016-08-01 00:52:56", "time_count": "4"}, {"md": "9999716292397959034", "name": "清缘里(中区)", "point_x": "116.355609", "point_y": "40.029033", "class_code": "281010", "time": "2016-08-01 00:52:56", "time_count": "3"}]}};
+    $('#ajax_tip').css('display','none');
+    $('#ajax_before_tip').css('display','none');
     data_cur={};
-    jQuery.extend(true,data_cur,data_get);
-    checked_fun();
-/*$.ajax({
+$.ajax({
       type:"get",
-	  url:"http://10.173.142.164:8080/poke_timi_200916/php/get_frag_info_timi.php?md="+cur_md+"&output_type=jsonp&time="+(new Date()).getTime()+"",
+	    url:"http://10.173.142.164:8080/didi_order/php/get_frag_info_didi.php?md="+cur_md+"&time="+cur_time+"&cb=didiorder&output_type=jsonp&sstime="+(new Date()).getTime()+"",
       dataType:"jsonp",
       jsonp:"cb",
-      jsonpCallback:"test",
+      jsonpCallback:"didiorder",
       success:function(data){
+        $('#ajax_before_tip').css('display','none');
 		    if(data){
+          data_get=data;
+          jQuery.extend(true,data_cur,data_get);
+          checked_fun();
+          if(data.end_info.length==0&&data.start_info.length==0){
+             $('#ajax_tip').css('display','block');
+             setTimeout(function(){
+                $('#ajax_tip').css('display','none');
+             },1000);
+          }
+        }
         
-        }
-        else{
-           $('#ajax_tip').css('display','block');
-           MapHelper.cleanPoi();
-        }
-
       },
       error:function(ys){
+         $('#ajax_tip').css('display','block');
+         setTimeout(function(){
+            $('#ajax_tip').css('display','none');
+         },1000);
+         $('#ajax_before_tip').css('display','none');
          console.log('fail_poi_list')
       },
       beforeSend:function(){
         $('#ajax_before_tip').css('display','block');
       },
       complete:function(){
-        window.location.hash='md='+cur_md+'';
+        window.location.hash='md='+cur_md+'&time='+cur_time+'&md_name='+cur_md_name+'&lng='+cur_lng+'&lat='+cur_lat+'';
       }
-  })*/
+  })
 }
 
 
@@ -477,6 +476,7 @@ function poi_search_wenzi(poi_w){
            cur_md = json.data[0].id;
            cur_lng = json.data[0].location.lng;
            cur_lat = json.data[0].location.lat;
+           cur_md_name=poi_w;
            poi_list();
            //这里通过md去获取结果 通过经纬度改变地图中心点
         }else{
@@ -631,7 +631,459 @@ AutoComplete.prototype={
 }
 
 
-
-console.log(data_get)
-console.log(data_cur)
-
+/*data_get={
+  "point_id": "10000237242905405366",
+  "end_info": [
+    {
+      "time_count": 1,
+      "class_code": "261612",
+      "point_y": "39.8661",
+      "point_x": "116.369",
+      "name": "开阳里",
+      "md": "14807500289071369019"
+    },
+    {
+      "time_count": 1,
+      "class_code": "261612",
+      "point_y": "39.87",
+      "point_x": "116.367",
+      "name": "右安门",
+      "md": "488965000350343884"
+    },
+    {
+      "time_count": 1,
+      "class_code": "281010",
+      "point_y": "39.820718",
+      "point_x": "116.437633",
+      "name": "北空住宅小区",
+      "md": "12151227119926697386"
+    },
+    {
+      "time_count": 0,
+      "class_code": "281010",
+      "point_y": "39.958040",
+      "point_x": "116.403094",
+      "name": "黄寺大街2号院",
+      "md": "630425867436704026"
+    },
+    {
+      "time_count": 0,
+      "class_code": "221100",
+      "point_y": "39.765719",
+      "point_x": "116.341257",
+      "name": "高米店公园",
+      "md": "12754316838117203994"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.8441",
+      "point_x": "116.376",
+      "name": "马家堡",
+      "md": "7020408830384290907"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261611",
+      "point_y": "40.0695",
+      "point_x": "116.602",
+      "name": "首都机场",
+      "md": "3958123695942676603"
+    },
+    {
+      "time_count": 0,
+      "class_code": "281010",
+      "point_y": "39.837007",
+      "point_x": "116.384383",
+      "name": "西马场南里(一区)",
+      "md": "13690317312215560675"
+    },
+    {
+      "time_count": 0,
+      "class_code": "281010",
+      "point_y": "39.837629",
+      "point_x": "116.382817",
+      "name": "西马·金润家园",
+      "md": "10143549657378145685"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.8138",
+      "point_x": "116.31",
+      "name": "花乡",
+      "md": "3621145306123065938"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.9175",
+      "point_x": "116.586",
+      "name": "管庄",
+      "md": "12602469734723964876"
+    },
+    {
+      "time_count": 0,
+      "class_code": "281010",
+      "point_y": "39.842892",
+      "point_x": "116.414293",
+      "name": "石榴庄西街",
+      "md": "11422483020744049962"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261613",
+      "point_y": "39.8918",
+      "point_x": "116.402",
+      "name": "珠市口",
+      "md": "6896000510945198284"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.8761",
+      "point_x": "116.461",
+      "name": "潘家园",
+      "md": "5291613672711026672"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.8626",
+      "point_x": "116.43",
+      "name": "方庄",
+      "md": "15122005536931915263"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.9406",
+      "point_x": "116.366",
+      "name": "新街口",
+      "md": "3942576616906014771"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.8456",
+      "point_x": "116.444",
+      "name": "成寿寺",
+      "md": "3617689897366357484"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.8648",
+      "point_x": "116.449",
+      "name": "左安门",
+      "md": "6772442529244351538"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.8484",
+      "point_x": "116.43",
+      "name": "宋家庄",
+      "md": "5388207836196741777"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261611",
+      "point_y": "39.8815",
+      "point_x": "116.41",
+      "name": "天坛",
+      "md": "4204779595402597933"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261613",
+      "point_y": "39.8358",
+      "point_x": "116.401",
+      "name": "大红门",
+      "md": "211010337160084647"
+    },
+    {
+      "time_count": 0,
+      "class_code": "281010",
+      "point_y": "39.873871",
+      "point_x": "116.453443",
+      "name": "华威西里",
+      "md": "14661205157830940651"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.8614",
+      "point_x": "116.466",
+      "name": "十里河",
+      "md": "9049277928487800217"
+    },
+    {
+      "time_count": 0,
+      "class_code": "271020",
+      "point_y": "40.077046",
+      "point_x": "116.600466",
+      "name": "北京首都国际机场",
+      "md": "16242010185520789715"
+    },
+    {
+      "time_count": 0,
+      "class_code": "281010",
+      "point_y": "39.883077",
+      "point_x": "116.448403",
+      "name": "劲松(八区)",
+      "md": "10232369366050800798"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.8837",
+      "point_x": "116.461",
+      "name": "劲松",
+      "md": "18254193955880577317"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.8953",
+      "point_x": "116.398",
+      "name": "前门",
+      "md": "12529540822592633355"
+    },
+    {
+      "time_count": 0,
+      "class_code": "281010",
+      "point_y": "39.938340",
+      "point_x": "116.366316",
+      "name": "冠英园(西区)",
+      "md": "1619261652243508672"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261613",
+      "point_y": "39.842",
+      "point_x": "116.368",
+      "name": "公益西桥",
+      "md": "17822024237316975891"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.9075",
+      "point_x": "116.309",
+      "name": "公主坟",
+      "md": "931844177840782932"
+    },
+    {
+      "time_count": 0,
+      "class_code": "281010",
+      "point_y": "39.914549",
+      "point_x": "116.421321",
+      "name": "东堂子胡同小区",
+      "md": "17514838273108029021"
+    }
+  ],
+  "start_info": [
+    {
+      "time_count": 1,
+      "class_code": "261612",
+      "point_y": "39.908",
+      "point_x": "116.437",
+      "name": "建国门",
+      "md": "334228764054540438"
+    },
+    {
+      "time_count": 1,
+      "class_code": "261611",
+      "point_y": "39.905",
+      "point_x": "116.428",
+      "name": "北京站",
+      "md": "17416972940171720727"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261611",
+      "point_y": "39.8783",
+      "point_x": "116.433",
+      "name": "龙潭湖",
+      "md": "9572228378899035607"
+    },
+    {
+      "time_count": 0,
+      "class_code": "281010",
+      "point_y": "39.859048",
+      "point_x": "116.392237",
+      "name": "西罗园(二区)",
+      "md": "1204578564361811768"
+    },
+    {
+      "time_count": 0,
+      "class_code": "111000",
+      "point_y": "39.860519",
+      "point_x": "116.394373",
+      "name": "西罗园(一区)",
+      "md": "376145758768117619"
+    },
+    {
+      "time_count": 0,
+      "class_code": "281010",
+      "point_y": "39.860519",
+      "point_x": "116.391780",
+      "name": "西罗园",
+      "md": "6893296779059829901"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.8574",
+      "point_x": "116.392",
+      "name": "西罗园",
+      "md": "1785756773135424827"
+    },
+    {
+      "time_count": 0,
+      "class_code": "281010",
+      "point_y": "39.869590",
+      "point_x": "116.435408",
+      "name": "芳城园(一区)",
+      "md": "6013972557170032431"
+    },
+    {
+      "time_count": 0,
+      "class_code": "281010",
+      "point_y": "39.868339",
+      "point_x": "116.434874",
+      "name": "芳城园",
+      "md": "3008704129290012719"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.8138",
+      "point_x": "116.31",
+      "name": "花乡",
+      "md": "3621145306123065938"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.9175",
+      "point_x": "116.586",
+      "name": "管庄",
+      "md": "12602469734723964876"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.8628",
+      "point_x": "116.402",
+      "name": "沙子口",
+      "md": "10304870988497548396"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.8626",
+      "point_x": "116.43",
+      "name": "方庄",
+      "md": "15122005536931915263"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.8144",
+      "point_x": "116.342",
+      "name": "新发地",
+      "md": "5297600875616329534"
+    },
+    {
+      "time_count": 0,
+      "class_code": "281010",
+      "point_y": "39.819482",
+      "point_x": "116.434150",
+      "name": "庑殿家苑(B区)",
+      "md": "4685664098874666340"
+    },
+    {
+      "time_count": 0,
+      "class_code": "281010",
+      "point_y": "39.819558",
+      "point_x": "116.433145",
+      "name": "庑殿家苑",
+      "md": "4077795187198363773"
+    },
+    {
+      "time_count": 0,
+      "class_code": "281010",
+      "point_y": "39.792514",
+      "point_x": "116.501872",
+      "name": "大雄·郁金香舍",
+      "md": "2612094734312918552"
+    },
+    {
+      "time_count": 0,
+      "class_code": "281010",
+      "point_y": "39.862939",
+      "point_x": "116.405381",
+      "name": "华龙美晟",
+      "md": "143828181606789391"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.8454",
+      "point_x": "116.512",
+      "name": "十八里店",
+      "md": "314177514422708173"
+    },
+    {
+      "time_count": 0,
+      "class_code": "281011",
+      "point_y": "39.915844",
+      "point_x": "116.605774",
+      "name": "北京新天地",
+      "md": "13259788824952458353"
+    },
+    {
+      "time_count": 0,
+      "class_code": "131600",
+      "point_y": "39.815508",
+      "point_x": "116.336393",
+      "name": "北京新发地农产品批发市场",
+      "md": "16735852664919329490"
+    },
+    {
+      "time_count": 0,
+      "class_code": "281010",
+      "point_y": "39.883077",
+      "point_x": "116.448403",
+      "name": "劲松(八区)",
+      "md": "10232369366050800798"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.8837",
+      "point_x": "116.461",
+      "name": "劲松",
+      "md": "18254193955880577317"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261613",
+      "point_y": "39.8555",
+      "point_x": "116.456",
+      "name": "分钟寺",
+      "md": "12276860367466652168"
+    },
+    {
+      "time_count": 0,
+      "class_code": "261612",
+      "point_y": "39.7876",
+      "point_x": "116.51",
+      "name": "亦庄",
+      "md": "5156948706135991892"
+    }
+  ]
+}
+*/

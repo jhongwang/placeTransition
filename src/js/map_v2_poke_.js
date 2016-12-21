@@ -72,7 +72,7 @@ MapHelper.searchService = function(){
 
   MapHelper.initMap = function(center) {
     var mapObj = new QQMap.Map(root, {
-      zoom: 16,
+      zoom: 12,
       center: center,
       draggable: true,
       scrollwheel: true,
@@ -112,14 +112,14 @@ MapHelper.searchService = function(){
   MapHelper.bindEventHandler = function() {
     var that = this;
     var onPoiChange = this.onPoiChange;
-    QQMap.event.addListener(this.mapObj, 'click', function(event) {
-      var lng = event.latLng.getLng();
-      var lat = event.latLng.getLat();
-      that.setMarkerPostion(lat, lng);
-      onPoiChange && onPoiChange(lng, lat);
-      //that.cleanCircle();
-      //that.setCircle(lat, lng, radius);
-    });
+    // QQMap.event.addListener(this.mapObj, 'click', function(event) {
+    //   var lng = event.latLng.getLng();
+    //   var lat = event.latLng.getLat();
+    //   that.setMarkerPostion(lat, lng);
+    //   onPoiChange && onPoiChange(lng, lat);
+    //   //that.cleanCircle();
+    //   //that.setCircle(lat, lng, radius);
+    // });
   };
 
   MapHelper.setRadius = function(radius) {
@@ -139,7 +139,7 @@ MapHelper.searchService = function(){
     });
   };
 
-MapHelper.setMarkers_poi = function(arr,cate) {//画起点的
+MapHelper.setMarkers_poi = function(arr) {//画起点的
        var anchorb = new QQMap.Point(12,18),
         sizeb = new QQMap.Size(20, 30),
         origin = new QQMap.Point(0,0),
@@ -160,10 +160,14 @@ MapHelper.setMarkers_poi = function(arr,cate) {//画起点的
         var lat=poi_arr[i].point_y;
         var name=poi_arr[i].name;
         var time_c=poi_arr[i].time_count;
-        var time = poi_arr[i].time;
         var md = poi_arr[i].md;
         var num=i+1;
-       // MapHelper.setCenter(lat,lng);
+         var classCode = poi_arr[i].class_code.substring(0,4);
+         if(classCode == 2616){
+            var cate = '商圈';
+         }else{
+            var cate = 'POI';
+         }
         marker_position= new QQMap.LatLng(lat, lng);
         var marker_poi = new QQMap.Marker({
             position: marker_position,
@@ -179,21 +183,22 @@ MapHelper.setMarkers_poi = function(arr,cate) {//画起点的
        marker_poi.name=name;
        marker_poi.time_c=time_c;
        marker_poi.md=md;
-       marker_poi.time=time;
+       marker_poi.cate=cate;
        QQMap.event.addListener(marker_poi, 'mouseover', function() {
+           InfoWin.close();
            InfoWin.open(); 
-           InfoWin.setContent('<p style="text-align:center;font-weight:700;">起点--'+cate+''+this.i+'</p><div style="text-align:left;white-space:nowrap;">名称:'+this.name+'<br/>排名：'+this.i+'<br/>热度：'+this.time_c+'</div>');
+           InfoWin.setContent('<p style="text-align:center;font-weight:700;">起点--'+this.cate+''+this.i+'</p><div style="text-align:left;white-space:nowrap;">名称:'+this.name+'<br/>排名：'+this.i+'<br/>热度：'+this.time_c+'</div>');
            InfoWin.setPosition(new QQMap.LatLng(this.index_lat, this.index_lng));
            setTimeout(function() {
                 InfoWin.close();
-            }, 30 * 1000);
+            }, 10 * 1000);
        }); 
       }//上一个for循环结尾
 
   };
-MapHelper.setMarkers_poi_radio = function(arr,cate) {
+MapHelper.setMarkers_poi_radio = function(arr) {
        var anchorb = new QQMap.Point(12,18),
-        sizeb = new QQMap.Size(26, 26),
+        sizeb = new QQMap.Size(18,28),
         origin = new QQMap.Point(0,0),
         icon = new QQMap.MarkerImage(
             "images/marker_poi_end.png",
@@ -212,9 +217,14 @@ MapHelper.setMarkers_poi_radio = function(arr,cate) {
         var lat=poi_arr[i].point_y;
         var name=poi_arr[i].name;
         var time_c=poi_arr[i].time_count;
-        var time = poi_arr[i].time;
         var md = poi_arr[i].md;
         var num=i+1;
+        var classCode = poi_arr[i].class_code.substring(0,4);
+         if(classCode == 2616){
+            var cate = '商圈';
+         }else{
+            var cate = 'POI';
+         }
         marker_position= new QQMap.LatLng(lat, lng);
         var marker_poi = new QQMap.Marker({
             position: marker_position,
@@ -222,7 +232,7 @@ MapHelper.setMarkers_poi_radio = function(arr,cate) {
             animation: QQMap.MarkerAnimation.DROP,
             zIndex:9
        });
-       markers_poi_.push(marker_poi);
+       markers_poi_radio.push(marker_poi);
        marker_poi.setIcon(icon);
        marker_poi.index_lat=lat;
        marker_poi.index_lng=lng;
@@ -230,15 +240,16 @@ MapHelper.setMarkers_poi_radio = function(arr,cate) {
        marker_poi.name=name;
        marker_poi.time_c=time_c;
        marker_poi.md=md;
-       marker_poi.time=time;
+       marker_poi.cate=cate;
 
        QQMap.event.addListener(marker_poi, 'mouseover', function() {
+           InfoWin.close();
            InfoWin.open(); 
-           InfoWin.setContent('<p style="text-align:center;font-weight:700;">起点--'+cate+''+this.i+'</p><div style="text-align:left;white-space:nowrap;">名称:'+this.name+'<br/>排名：'+this.i+'<br/>热度：'+this.time_c+'</div>');
+           InfoWin.setContent('<p style="text-align:center;font-weight:700;">终点--'+this.cate+''+this.i+'</p><div style="text-align:left;white-space:nowrap;">名称:'+this.name+'<br/>排名：'+this.i+'<br/>热度：'+this.time_c+'</div>');
            InfoWin.setPosition(new QQMap.LatLng(this.index_lat, this.index_lng));
            setTimeout(function() {
                 InfoWin.close();
-            }, 30 * 1000);
+            }, 10 * 1000);
        }); 
       }
   };
@@ -424,7 +435,7 @@ MapHelper.drawRectangle = function(data) {
                InfoWin.setPosition(new QQMap.LatLng(this.lat,this.lng));
                setTimeout(function() {
                     InfoWin.close();
-                }, 30 * 1000);
+                }, 10 * 1000);
            }); 
            QQMap.event.addListener(rectangle_, 'rightclick', function() {
                $('.poi_radio a').eq(0).addClass('poi_cur').siblings().removeClass('poi_cur');

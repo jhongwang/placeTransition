@@ -14,7 +14,7 @@
     <h1 class="poi_title">位置迁移调试demo</h1>
     <div class="poi_t">
       <div class="poi_field poi_field_first" style="margin-left:20px;">
-           商圈/POI: <input id="search_lng_lat" type="text" class="text" value="清河">
+           商圈/POI: <input id="search_lng_lat" type="text" class="text" value="">
            <ul class="ui-autocomplete" id="ui-id-1" tabindex="0">
              <li></li>
              <li></li>
@@ -30,17 +30,17 @@
       </div>
       <input type="button" class="input_btn" value="查 询" id="poi_search"/>
       <div class="poi_field" style="margin-left:50px;margin-right:30px;">
-             城市：<input type="text"  id="city" value="北京市">
+             城市：<input type="text"  id="city" value="北京市" readonly>
        </div>
        <div class="poi_field">
              时间：<select id="time_select" class="time_select">
-                        <option value="1">全天 00：00 - 24：00</option>
-                        <option value="2">凌晨 00：00 - 07：00</option>
-                        <option value="3">早上 07：00 - 10：00</option>
-                        <option value="4">上午 10：00 - 12：00</option>
-                        <option value="5">中午 12：00 - 14：00</option>
-                        <option value="6">下午 14：00 - 19：00</option>
-                        <option value="7">晚上 19：00 - 24：00</option>
+                        <option value="0">全天 00：00 - 24：00</option>
+                        <option value="1">凌晨 00：00 - 07：00</option>
+                        <option value="2">早上 07：00 - 10：00</option>
+                        <option value="3">上午 10：00 - 12：00</option>
+                        <option value="4">中午 12：00 - 14：00</option>
+                        <option value="5">下午 14：00 - 19：00</option>
+                        <option value="6">晚上 19：00 - 24：00</option>
                   </select>
        </div>
    </div>
@@ -96,8 +96,7 @@
                <input class="input_icon" name="input_checkbox" id="icon_z" type="checkbox" checked value="终点" style="margin-left:12px;"/><label for="icon_z">终点</label>
           </div>
           <div id="root">
-                 <!--  <div id="ajax_tip">此定位点暂时没有相关数据哦。</div> -->
-                   <div id="ajax_tip">暂时用的是同一个数据，基本定位在清河附近</div>
+                  <div id="ajax_tip">此定位点暂时没有相关数据哦。</div>
                   <div id="ajax_before_tip"><img src="images/load.jpg" width="80px" height="80px" alt="" /></div>
                   
           </div>
