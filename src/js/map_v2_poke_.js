@@ -147,7 +147,7 @@ MapHelper.drawPolyline = function(lat,lng,start_data,end_data){
     var to_lng=start_data[i].point_x;
     var path_arr=[new QQMap.LatLng(lat, lng)];
     path_arr.push(new QQMap.LatLng(to_lat,to_lng));
-    var path_color="#f00";
+    var path_color=new QQMap.Color(255, 0, 0, 0.5);
     var polyline = new QQMap.Polyline({
             path: path_arr,
             strokeColor: path_color,
@@ -162,7 +162,7 @@ MapHelper.drawPolyline = function(lat,lng,start_data,end_data){
     var to_lng=end_data[i].point_x;
     var path_arr=[new QQMap.LatLng(lat, lng)];
     path_arr.push(new QQMap.LatLng(to_lat,to_lng));
-    var path_color="#1d953f";
+    var path_color=new QQMap.Color(29,149,63,0.8);
     var polyline = new QQMap.Polyline({
             path: path_arr,
             strokeColor: path_color,
@@ -174,8 +174,8 @@ MapHelper.drawPolyline = function(lat,lng,start_data,end_data){
  }
  
 }
-MapHelper.setMarkers_poi = function(arr) {//画起点的
-       var anchorb = new QQMap.Point(12,18),
+MapHelper.setMarkers_poi = function(arr) {//画起点的--入度的--startinfo
+       var anchorb = new QQMap.Point(14,18),
         sizeb = new QQMap.Size(20, 30),
         origin = new QQMap.Point(0,0),
         icon = new QQMap.MarkerImage(
@@ -233,7 +233,7 @@ MapHelper.setMarkers_poi = function(arr) {//画起点的
   };
 MapHelper.setMarkers_poi_radio = function(arr) {
        var anchorb = new QQMap.Point(12,18),
-        sizeb = new QQMap.Size(18,28),
+        sizeb = new QQMap.Size(20,30),
         origin = new QQMap.Point(0,0),
         icon = new QQMap.MarkerImage(
             "images/marker_poi_end.png",

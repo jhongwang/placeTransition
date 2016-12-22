@@ -252,13 +252,13 @@ function draw_data(){
     //商圈 POI 起点 终点
     if(checkbox_selected.indexOf('起点') != -1){
        if(checkbox_selected.indexOf('商圈') != -1 && checkbox_selected.indexOf('POI') != -1){
-         var arr = data_cur.start_info.slice(0,10);
+         var arr = data_cur.start_info;
           for(var i =0;i< arr.length; i++){
              start_lists.push(arr[i]);
           }
        }else{
          if(checkbox_selected.indexOf('商圈') != -1){
-          var arr = data_cur.start_info.slice(0,10);
+          var arr = data_cur.start_info;
           for(var i =0;i< arr.length; i++){
              var classCode = arr[i].class_code.substring(0,4);
              if(classCode == 2616){
@@ -267,7 +267,7 @@ function draw_data(){
           }
          }
          if(checkbox_selected.indexOf('POI') != -1){
-           var arr = data_cur.start_info.slice(0,10);
+          var arr = data_cur.start_info;
           for(var i =0;i< arr.length; i++){
              var classCode = arr[i].class_code.substring(0,4);
              if(classCode != 2616){
@@ -280,13 +280,13 @@ function draw_data(){
     }
     if(checkbox_selected.indexOf('终点') != -1){
        if(checkbox_selected.indexOf('商圈') != -1 && checkbox_selected.indexOf('POI') != -1){
-         var arr = data_cur.end_info.slice(0,10);
+         var arr = data_cur.end_info;
           for(var i =0;i< arr.length; i++){
              end_lists.push(arr[i]);
           }
        }else{
          if(checkbox_selected.indexOf('商圈') != -1){
-          var arr = data_cur.end_info.slice(0,10);
+          var arr = data_cur.end_info;
           for(var i =0;i< arr.length; i++){
              var classCode = arr[i].class_code.substring(0,4);
              if(classCode == 2616){
@@ -295,7 +295,7 @@ function draw_data(){
           }
          }
          if(checkbox_selected.indexOf('POI') != -1){
-           var arr = data_cur.end_info.slice(0,10);
+          var arr = data_cur.end_info;
           for(var i =0;i< arr.length; i++){
              var classCode = arr[i].class_code.substring(0,4);
              if(classCode != 2616){
@@ -314,7 +314,7 @@ function draw_marker(){
   creatTable_start(start_lists.slice(0,10),end_lists.slice(0,10));
  // MapHelper.drawPolyline(cur_lat,cur_lng,start_lists.slice(0,10),end_lists.slice(0,10));
 }
-function creatTable_start(start_list,end_list){
+function creatTable_start(start_list,end_list){//出度--end_inf
   console.log(start_list.length)
   console.log(end_list.length)
   $('#table_start tbody').html('');
@@ -381,10 +381,10 @@ function creatTable_start(start_list,end_list){
      }
      
   }
-  $('#table_start tbody').html(iHtml);
-  $('#table_end tbody').html(iHtml2);
-  li_click_start('table_start');
-  li_click_end('table_end');
+  $('#table_start tbody').html(iHtml);//入度的table
+  $('#table_end tbody').html(iHtml2);//出度的table
+  li_click_start('table_start',start_len);
+  li_click_end('table_end',end_len);
   tr_hei();
 }
 function tr_hei(){
@@ -399,9 +399,9 @@ function clear_alltd(){
   }
 }
 
-function li_click_start(id){
+function li_click_start(id,len){
   var aLi=document.getElementById(id).tBodies[0].getElementsByTagName('tr');
-  for(var i=0;i<aLi.length;i++){
+  for(var i=0;i<len;i++){
      aLi[i].index=i;
      aLi[i].onclick=function(){
          clear_alltd();
@@ -413,9 +413,9 @@ function li_click_start(id){
      }
   }
 }
-function li_click_end(id){
+function li_click_end(id,len){
   var aLi=document.getElementById(id).tBodies[0].getElementsByTagName('tr');
-  for(var i=0;i<aLi.length;i++){
+  for(var i=0;i<len;i++){
      aLi[i].index=i;
      aLi[i].onclick=function(){
          clear_alltd();
