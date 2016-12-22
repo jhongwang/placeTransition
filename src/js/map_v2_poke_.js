@@ -10,6 +10,8 @@
   var radius_ = 2000;
   var rectangle_;
   var rectangle_arr=[];
+  var polyline_arr=[];
+  var polyline_arr2=[];
   var InfoWin;
   
   if (!Array.prototype.forEach)
@@ -138,7 +140,40 @@ MapHelper.searchService = function(){
       animation: QQMap.MarkerAnimation.DROP
     });
   };
-
+MapHelper.drawPolyline = function(lat,lng,start_data,end_data){
+ 
+ for(var i = 0;i<start_data.length;i++){
+    var to_lat=start_data[i].point_y;
+    var to_lng=start_data[i].point_x;
+    var path_arr=[new QQMap.LatLng(lat, lng)];
+    path_arr.push(new QQMap.LatLng(to_lat,to_lng));
+    var path_color="#f00";
+    var polyline = new QQMap.Polyline({
+            path: path_arr,
+            strokeColor: path_color,
+            strokeWeight: 2,
+            editable: false,
+            map: this.mapObj
+    });
+    polyline_arr.push(polyline);
+ }
+ for(var i = 0;i<end_data.length;i++){
+    var to_lat=end_data[i].point_y;
+    var to_lng=end_data[i].point_x;
+    var path_arr=[new QQMap.LatLng(lat, lng)];
+    path_arr.push(new QQMap.LatLng(to_lat,to_lng));
+    var path_color="#1d953f";
+    var polyline = new QQMap.Polyline({
+            path: path_arr,
+            strokeColor: path_color,
+            strokeWeight: 2,
+            editable: false,
+            map: this.mapObj
+    });
+    polyline_arr2.push(polyline);
+ }
+ 
+}
 MapHelper.setMarkers_poi = function(arr) {//画起点的
        var anchorb = new QQMap.Point(12,18),
         sizeb = new QQMap.Size(20, 30),

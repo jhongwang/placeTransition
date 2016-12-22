@@ -310,40 +310,87 @@ function draw_marker(){
   MapHelper.setMarkers_poi(start_lists.slice(0,10));
   MapHelper.setMarkers_poi_radio(end_lists.slice(0,10));
   creatTable_start(start_lists.slice(0,10),end_lists.slice(0,10));
+ // MapHelper.drawPolyline(cur_lat,cur_lng,start_lists.slice(0,10),end_lists.slice(0,10));
 }
 function creatTable_start(start_list,end_list){
   console.log(start_list.length)
   console.log(end_list.length)
   $('#table_start tbody').html('');
   $('#table_end tbody').html('');
+  var start_len=start_list.length;
+  var end_len = end_list.length;
   var iHtml = '';
   var iHtml2 = '';
-  for(var i = 0; i<start_list.length; i++){
+  for(var i = 0; i<10; i++){
      iHtml += '<tr>';
-     iHtml += '<td>'+(i+1)+'</td>';
-     var classCode = start_list[i].class_code.substring(0,4);
-     if(classCode == 2616){
-        iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="shang">B</i></td>';
+     if(start_len>10){
+       iHtml += '<td>'+(i+1)+'</td>';
+       var classCode = start_list[i].class_code.substring(0,4);
+       if(classCode == 2616){
+          iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="shang">B</i></td>';
+       }else{
+          iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="poi">P</i></td>';
+       }
+       iHtml += '<td>'+start_list[i].time_count+'</td>';
      }else{
-        iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="poi">P</i></td>';
+       if(i>start_len-1){
+         iHtml += '<td>&nbsp;</td>';
+         iHtml += '<td>&nbsp;&nbsp;&nbsp;</td>';
+         iHtml += '<td>&nbsp;</td>';
+       }else{
+         iHtml += '<td>'+(i+1)+'</td>';
+         var classCode = start_list[i].class_code.substring(0,4);
+         if(classCode == 2616){
+            iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="shang">B</i></td>';
+         }else{
+            iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="poi">P</i></td>';
+         }
+         iHtml += '<td>'+start_list[i].time_count+'</td>';
+       }
      }
-     iHtml += '<td>'+start_list[i].time_count+'</td>';
+    
   }
-  for(var i = 0; i<end_list.length; i++){
+  for(var i = 0; i<10; i++){
      iHtml2 += '<tr>';
-     iHtml2 += '<td>'+(i+1)+'</td>';
-     var classCode = end_list[i].class_code.substring(0,4);
-     if(classCode == 2616){
-        iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="shang">B</i></td>';
+     if(end_len>10){
+       iHtml2 += '<td>'+(i+1)+'</td>';
+       var classCode = end_list[i].class_code.substring(0,4);
+       if(classCode == 2616){
+          iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="shang">B</i></td>';
+       }else{
+          iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="poi">P</i></td>';
+       }
+       iHtml2 += '<td>'+end_list[i].time_count+'</td>';
      }else{
-        iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="poi">P</i></td>';
+       if(i>end_len-1){
+         iHtml2 += '<td>&nbsp;</td>';
+         iHtml2 += '<td>&nbsp;&nbsp;&nbsp;</td>';
+         iHtml2 += '<td>&nbsp;</td>';
+       }else{
+         iHtml2 += '<td>'+(i+1)+'</td>';
+         var classCode = end_list[i].class_code.substring(0,4);
+         if(classCode == 2616){
+            iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="shang">B</i></td>';
+         }else{
+            iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="poi">P</i></td>';
+         }
+         iHtml2 += '<td>'+end_list[i].time_count+'</td>';
+       }
      }
-     iHtml2 += '<td>'+end_list[i].time_count+'</td>';
+     
   }
   $('#table_start tbody').html(iHtml);
   $('#table_end tbody').html(iHtml2);
   li_click_start('table_start');
   li_click_end('table_end');
+  tr_hei();
+  
+  
+}
+function tr_hei(){
+  var tr_height=($('#nav_table_box').height()-64)/10;
+  var tr_height_=tr_height+'px';
+  $('#nav_table_box table tbody tr').css('height',tr_height_);
 }
 function clear_alltd(){
   var all_td=document.getElementsByTagName('td');
