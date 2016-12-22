@@ -100,7 +100,8 @@ label{
   width: 1px;
   height:100%;
   background-color: #ccc;
-  float: left;
+  position: absolute;
+  left: 50%;
 }
 
 #nav_table_box{
@@ -125,6 +126,7 @@ label{
 #nav table{
    float: left;
    width: 50%;
+   height: 100%;
 }
 #nav table th.th_blue{
     background-color: #2a8de2;
@@ -181,7 +183,6 @@ table{
   border-collapse:collapse; 
   font-family:"微软雅黑"; 
   border-spacing:0;
-  height: 100%;
 }
 table tbody{
   background: #f7f7f7;
