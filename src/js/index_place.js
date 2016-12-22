@@ -41,7 +41,9 @@ $('.input_btn').mousedown(function(){
 $('.input_btn').mouseup(function(){
   $(this).css('background','#2d9cff');
 })
-
+window.onresize=function(){
+  tr_hei();
+}
 //checkbox单选或者多选点击事件
 $('input[name=input_checkbox]').click(function(){
   checked_fun()
@@ -384,8 +386,6 @@ function creatTable_start(start_list,end_list){
   li_click_start('table_start');
   li_click_end('table_end');
   tr_hei();
-  
-  
 }
 function tr_hei(){
   var tr_height=($('#nav_table_box').height()-64)/10;
