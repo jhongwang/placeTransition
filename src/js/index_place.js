@@ -249,16 +249,18 @@ function draw_data(){
     clearDitu();
     start_lists = [];
     end_lists = [];
+    //出度--终点--start_indo
+    //入度--起点--end_info
     //商圈 POI 起点 终点
     if(checkbox_selected.indexOf('起点') != -1){
        if(checkbox_selected.indexOf('商圈') != -1 && checkbox_selected.indexOf('POI') != -1){
-         var arr = data_cur.start_info;
+         var arr = data_cur.end_info;
           for(var i =0;i< arr.length; i++){
              start_lists.push(arr[i]);
           }
        }else{
          if(checkbox_selected.indexOf('商圈') != -1){
-          var arr = data_cur.start_info;
+          var arr = data_cur.end_info;
           for(var i =0;i< arr.length; i++){
              var classCode = arr[i].class_code.substring(0,4);
              if(classCode == 2616){
@@ -267,7 +269,7 @@ function draw_data(){
           }
          }
          if(checkbox_selected.indexOf('POI') != -1){
-          var arr = data_cur.start_info;
+          var arr = data_cur.end_info;
           for(var i =0;i< arr.length; i++){
              var classCode = arr[i].class_code.substring(0,4);
              if(classCode != 2616){
@@ -280,13 +282,13 @@ function draw_data(){
     }
     if(checkbox_selected.indexOf('终点') != -1){
        if(checkbox_selected.indexOf('商圈') != -1 && checkbox_selected.indexOf('POI') != -1){
-         var arr = data_cur.end_info;
+         var arr = data_cur.start_info;
           for(var i =0;i< arr.length; i++){
              end_lists.push(arr[i]);
           }
        }else{
          if(checkbox_selected.indexOf('商圈') != -1){
-          var arr = data_cur.end_info;
+          var arr = data_cur.start_info;
           for(var i =0;i< arr.length; i++){
              var classCode = arr[i].class_code.substring(0,4);
              if(classCode == 2616){
@@ -295,7 +297,7 @@ function draw_data(){
           }
          }
          if(checkbox_selected.indexOf('POI') != -1){
-          var arr = data_cur.end_info;
+          var arr = data_cur.start_info;
           for(var i =0;i< arr.length; i++){
              var classCode = arr[i].class_code.substring(0,4);
              if(classCode != 2616){
