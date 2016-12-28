@@ -351,8 +351,8 @@ function creatTable_start(start_list,end_list){//
   $('#hot_max').html(hot_max);
   $('#table_start tbody').html('');
   $('#table_end tbody').html('');
-  $('#chudu_num').html('('+data_get.start_info.length+')');
-  $('#rudu_num').html('('+data_get.end_info.length+')');
+  $('#chudu_num').html('('+data_get.start_count+')');
+  $('#rudu_num').html('('+data_get.end_count+')');
   var start_len=start_list.length;
   var end_len = end_list.length;
   var iHtml = '';
@@ -368,7 +368,7 @@ function creatTable_start(start_list,end_list){//
           iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="poi">P</i></td>';
        }
        iHtml += '<td>'+start_list[i].time_count+'</td>';
-       var time_count_avg=(start_list[i].time_count/data_get.start_info.length).toFixed(2);
+       var time_count_avg=(start_list[i].time_count/data_get.start_count).toFixed(2);
        iHtml += '<td>'+time_count_avg+'</td>';
      }else{
        if(i>start_len-1){
@@ -385,7 +385,7 @@ function creatTable_start(start_list,end_list){//
             iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="poi">P</i></td>';
          }
          iHtml += '<td>'+start_list[i].time_count+'</td>';
-         var time_count_avg=(start_list[i].time_count/data_get.start_info.length).toFixed(2);
+         var time_count_avg=(start_list[i].time_count/data_get.start_count).toFixed(2);
          iHtml += '<td>'+time_count_avg+'</td>';
        }
      }
@@ -403,7 +403,7 @@ function creatTable_start(start_list,end_list){//
           iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="poi">P</i></td>';
        }
        iHtml2 += '<td>'+end_list[i].time_count+'</td>';
-        var time_count_avg=(end_list[i].time_count/data_get.end_info.length).toFixed(2);
+        var time_count_avg=(end_list[i].time_count/data_get.end_count).toFixed(2);
         iHtml2 += '<td>'+time_count_avg+'</td>';
      }else{
        if(i>end_len-1){
@@ -420,7 +420,7 @@ function creatTable_start(start_list,end_list){//
             iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="poi">P</i></td>';
          }
          iHtml2 += '<td>'+end_list[i].time_count+'</td>';
-          var time_count_avg=(end_list[i].time_count/data_get.end_info.length).toFixed(2);
+          var time_count_avg=(end_list[i].time_count/data_get.end_count).toFixed(2);
          iHtml2 += '<td>'+time_count_avg+'</td>';
        }
      }
