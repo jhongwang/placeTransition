@@ -147,6 +147,11 @@ var cur_lng = 116.30752;//当前选择点的lng
 var cur_lat = 39.98406;//当前选择点的lat
 var data_get;//获取ajax获取下来的数据 这个只有展示不可给改
 var data_cur={};//把当前的从后台获取的数据放在这里 可以更改
+//var color_arr=['#ff0000','#ffb300','#d5ff00','#30ff00','#00ffec'];//从红到绿
+var color_arr=['#ff0000','#FFA500','#FFFF00','#32CD32','#48D1CC'];//从红到绿
+var hot_min;
+var hot_max;
+
 //jQuery.extend(true,data_cur,data_get);
 
 function initPage(lng,lat) {
@@ -239,6 +244,8 @@ function $$(id){
 function clearDitu(){
     MapHelper.cleanMarkers_poi();
     MapHelper.cleanMarkers_poi_radio();
+    MapHelper.cleanRect();
+    MapHelper.cleanRect_arr();
 }
 function clearTable(){
     $('#table_start tbody').html('');
@@ -249,8 +256,8 @@ function draw_data(){
     clearDitu();
     start_lists = [];
     end_lists = [];
-    //出度--终点--start_indo
-    //入度--起点--end_info
+    //出度--终点--start_info--end_lists
+    //入度--起点--end_info---start_lists
     //商圈 POI 起点 终点
     if(checkbox_selected.indexOf('起点') != -1){
        if(checkbox_selected.indexOf('商圈') != -1 && checkbox_selected.indexOf('POI') != -1){
@@ -311,16 +318,41 @@ function draw_data(){
 }
 
 function draw_marker(){
-  MapHelper.setMarkers_poi(start_lists.slice(0,10));
-  MapHelper.setMarkers_poi_radio(end_lists.slice(0,10));
   creatTable_start(start_lists.slice(0,10),end_lists.slice(0,10));
+  MapHelper.setMarkers_poi(start_lists.slice(0,10));//起点
+  MapHelper.setMarkers_poi_radio(end_lists.slice(0,10));//终点
+  MapHelper.drawRectangle(start_lists.slice(0,10));//起点
+  MapHelper.drawRectangle_arr(end_lists.slice(0,10));
+ 
  // MapHelper.drawPolyline(cur_lat,cur_lng,start_lists.slice(0,10),end_lists.slice(0,10));
 }
-function creatTable_start(start_list,end_list){//出度--end_inf
-  console.log(start_list.length)
-  console.log(end_list.length)
+function creatTable_start(start_list,end_list){//
+    //出度--终点--start_info--end_lists
+    //入度--起点--end_info---start_lists
+  var time_count_arr=[];
+  console.log(start_list)
+  console.log(end_list)
+  for (var i = 0, length = start_list.length; i < length; i++){
+    time_count_arr.push(start_list[i].time_count);
+  }
+  for (var i = 0, length = end_list.length; i < length; i++){
+    time_count_arr.push(end_list[i].time_count);
+  }
+  hot_max = Math.max.apply(null,time_count_arr);
+  hot_min = Math.min.apply(null,time_count_arr);
+  if(hot_min=='-infinity'){
+    hot_min=0;
+  }
+  if(hot_min=='infinity'){
+    hot_max=0;
+  }
+  
+  $('#hot_min').html(hot_min);
+  $('#hot_max').html(hot_max);
   $('#table_start tbody').html('');
   $('#table_end tbody').html('');
+  $('#chudu_num').html('('+data_get.start_info.length+')');
+  $('#rudu_num').html('('+data_get.end_info.length+')');
   var start_len=start_list.length;
   var end_len = end_list.length;
   var iHtml = '';
@@ -336,10 +368,13 @@ function creatTable_start(start_list,end_list){//出度--end_inf
           iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="poi">P</i></td>';
        }
        iHtml += '<td>'+start_list[i].time_count+'</td>';
+       var time_count_avg=(start_list[i].time_count/data_get.start_info.length).toFixed(2);
+       iHtml += '<td>'+time_count_avg+'</td>';
      }else{
        if(i>start_len-1){
          iHtml += '<td>&nbsp;</td>';
          iHtml += '<td>&nbsp;&nbsp;&nbsp;</td>';
+         iHtml += '<td>&nbsp;</td>';
          iHtml += '<td>&nbsp;</td>';
        }else{
          iHtml += '<td>'+(i+1)+'</td>';
@@ -350,8 +385,11 @@ function creatTable_start(start_list,end_list){//出度--end_inf
             iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="poi">P</i></td>';
          }
          iHtml += '<td>'+start_list[i].time_count+'</td>';
+         var time_count_avg=(start_list[i].time_count/data_get.start_info.length).toFixed(2);
+         iHtml += '<td>'+time_count_avg+'</td>';
        }
      }
+     iHtml+='</tr>';
     
   }
   for(var i = 0; i<10; i++){
@@ -365,10 +403,13 @@ function creatTable_start(start_list,end_list){//出度--end_inf
           iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="poi">P</i></td>';
        }
        iHtml2 += '<td>'+end_list[i].time_count+'</td>';
+        var time_count_avg=(end_list[i].time_count/data_get.end_info.length).toFixed(2);
+        iHtml2 += '<td>'+time_count_avg+'</td>';
      }else{
        if(i>end_len-1){
          iHtml2 += '<td>&nbsp;</td>';
          iHtml2 += '<td>&nbsp;&nbsp;&nbsp;</td>';
+         iHtml2 += '<td>&nbsp;</td>';
          iHtml2 += '<td>&nbsp;</td>';
        }else{
          iHtml2 += '<td>'+(i+1)+'</td>';
@@ -379,8 +420,11 @@ function creatTable_start(start_list,end_list){//出度--end_inf
             iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="poi">P</i></td>';
          }
          iHtml2 += '<td>'+end_list[i].time_count+'</td>';
+          var time_count_avg=(end_list[i].time_count/data_get.end_info.length).toFixed(2);
+         iHtml2 += '<td>'+time_count_avg+'</td>';
        }
      }
+      iHtml2+='</tr>';
      
   }
   $('#table_start tbody').html(iHtml);//入度的table

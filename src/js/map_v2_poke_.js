@@ -10,6 +10,7 @@
   var radius_ = 2000;
   var rectangle_;
   var rectangle_arr=[];
+  var rectangle_arr_arr=[];
   var polyline_arr=[];
   var polyline_arr2=[];
   var InfoWin;
@@ -392,99 +393,138 @@ MapHelper.setMarkers_poi_radio = function(arr) {
     
   };
 
-MapHelper.drawRectangle = function(data) {
-  fbq_d=[];
-  fbq_b=[];
-  var draw_path;
-  for(var i=0;i<data.length;i++){
-    //注：这里的天美的是用的frag_info里面的flag 其他两个则用的是frag-category
-     var target=data[i].frag_info.flag;
-     //var target=data[i].frag_normal_info.frag_category;
-     var gym=data[i].gyms;
-     var stop=data[i].pokestops;
-     //封闭区的数据添加
-     if(target==0){
-         if(gym.length>0){
-            for(var j=0;j<gym.length;j++){
-               fbq_d.push(gym[j]);
-               var g_id=gym[j].id;
-               for(var k=0;k<ditubiaoji_d.length;k++){
-                  if(ditubiaoji_d[k].id==g_id){
-                     ditubiaoji_d[k].id_fbq=1;
-                  }
-               }
-            }
-         }
-         if(stop.length>0){
-            for(var j=0;j<stop.length;j++){
-               fbq_b.push(stop[j]);
-               var g_id=stop[j].id;
-               for(var k=0;k<ditubiaoji_b.length;k++){
-                  if(ditubiaoji_b[k].id==g_id){
-                     //ditubiaoji_b.splice(k,1);
-                     ditubiaoji_b[k].id_fbq=1;
-                  }
-               }
-            }
-         }
-     }
-     var frag_normal_info_=data[i].frag_normal_info;
-     var target_face=data[i].frag_info.location;
-     if(target_face.length>3){
-          var rect_a=target_face[0][0];
-          var rect_b=target_face[0][1];
-          var rect_c=target_face[3][0];
-          var rect_d=target_face[3][1];
-          if(target==99){
-            var current_color=tuli_color[tuli_color.length-1];
-            var current_tuli=tuli_title[tuli_title.length-1].name;
-            tuli_title[tuli_title.length-1].num++;
-          }else{
-            var current_color=tuli_color[target];
-            var current_tuli=tuli_title[target].name;
-            tuli_title[target].num++;
-          }
-          draw_path=[
-              new QQMap.LatLng(rect_b, rect_a),
-              new QQMap.LatLng(rect_b, rect_c),
-              new QQMap.LatLng(rect_d, rect_c),
-              new QQMap.LatLng(rect_d, rect_a)
-          ];
-           rectangle_ = new QQMap.Polygon({
-              path:draw_path,
-              strokeColor: '#014372',
-              strokeWeight: 1,
-              fillColor: QQMap.Color.fromHex(current_color, 0.6),
-              map: this.mapObj
-            });
-            rectangle_.setVisible(true);
-            rectangle_.setMap(this.mapObj);
-            rectangle_arr.push(rectangle_);
-            rectangle_.current_tuli=current_tuli;
-            rectangle_.lat=(rect_b+rect_d)/2;
-            rectangle_.lng=(rect_c+rect_a)/2;
-            rectangle_.frag_normal_info_=frag_normal_info_;
-           QQMap.event.addListener(rectangle_, 'mouseover', function() {
-               InfoWin.open(); 
-               InfoWin.setContent(this.current_tuli);
-               InfoWin.setPosition(new QQMap.LatLng(this.lat,this.lng));
-               setTimeout(function() {
-                    InfoWin.close();
-                }, 10 * 1000);
-           }); 
-           QQMap.event.addListener(rectangle_, 'rightclick', function() {
-               $('.poi_radio a').eq(0).addClass('poi_cur').siblings().removeClass('poi_cur');
-               $('#poi_fenpian').css('display','block');
-               $('#poi_poi').css('display','none');
-               if(!$.isEmptyObject(this.frag_normal_info_)){
-                console.log('分片信息数据为空')
-                creatTabtop_fenpian(this.frag_normal_info_,this.current_tuli);
-               }
-              // creatTabtop_fenpian(this.frag_normal_info_,this.current_tuli);
-           }); 
-      }
+MapHelper.drawRectangle = function(data,index) {//起点
+  var hot_avg = (hot_max-hot_min)/5+1;
+  var draw_path=[];
+  var index = index || 0;
+  if(index==10){
+    return false;
   }
-   
+  if(data.length>0){
+
+
+  var target=data[index].time_count;
+
+     if(target>=(hot_min+hot_avg*4)){
+         data[index]['color']=color_arr[0];
+     }else if(target>=(hot_min+hot_avg*3)){
+         data[index]['color']=color_arr[1];
+     }else if(target>=(hot_min+hot_avg*2)){
+         data[index]['color']=color_arr[2];
+     }else if(target>=(hot_min+hot_avg*1)){
+         data[index]['color']=color_arr[3];
+     }else{
+         data[index]['color']=color_arr[4];
+     }
+  
+     var line_color=data[index].color;
+     var target_face=data[index].shape;
+     for(var j =0 ;j<target_face.length;j++){
+          var t_lat=target_face[j].split(':')[1];
+          var t_lng=target_face[j].split(':')[0];
+          draw_path.push(new QQMap.LatLng(t_lat,t_lng));
+     }
+      rectangle_ = new QQMap.Polygon({
+              path:draw_path,
+              strokeWeight: 2,
+              fillColor:new qq.maps.Color(0, 0, 0, 0.1),
+              map: this.mapObj
+     });
+      rectangle_.setStrokeColor(data[index].color);
+      rectangle_.setVisible(true);
+      rectangle_.setMap(this.mapObj);
+      var classCode = data[index].class_code.substring(0,4);
+       if(classCode == 2616){
+          var cate = '商圈';
+       }else{
+          var cate = 'POI';
+       }
+      rectangle_.cate=cate;
+      rectangle_.i=index+1;
+      rectangle_.index_lat=data[index].point_y;
+      rectangle_.index_lng=data[index].point_x;
+      rectangle_.name=data[index].name;
+      rectangle_.time_c=data[index].time_count;
+      rectangle_arr.push(rectangle_);
+     /* QQMap.event.addListener(rectangle_, 'rightclick', function() {
+           InfoWin.close();
+           InfoWin.open(); 
+           InfoWin.setContent('<p style="text-align:center;font-weight:700;">起点--'+this.cate+''+this.i+'</p><div style="text-align:left;white-space:nowrap;">名称:'+this.name+'<br/>排名：'+this.i+'<br/>热度：'+this.time_c+'</div>');
+           InfoWin.setPosition(new QQMap.LatLng(this.index_lat, this.index_lng));
+           setTimeout(function() {
+                InfoWin.close();
+            }, 5* 1000);
+       }); */
+  }
+      setTimeout(function() {
+           MapHelper.drawRectangle(data,index+1)
+        }, 300);
+  };
+  MapHelper.drawRectangle_arr = function(data,index) {//终点点
+  var hot_avg = (hot_max-hot_min)/5+1;
+  var draw_path=[];
+  var index = index || 0;
+  if(index==10){
+    return false;
+  }
+  console.log(index)
+  var num=2;
+  if(data.length>0){
+  var target=data[index].time_count;
+     if(target>=(hot_min+hot_avg*4)){
+         data[index]['color']=color_arr[0];
+     }else if(target>=(hot_min+hot_avg*3)){
+         data[index]['color']=color_arr[1];
+     }else if(target>=(hot_min+hot_avg*2)){
+         data[index]['color']=color_arr[2];
+     }else if(target>=(hot_min+hot_avg*1)){
+         data[index]['color']=color_arr[3];
+     }else{
+         data[index]['color']=color_arr[4];
+     }
+  
+     var line_color=data[index].color;
+     var target_face=data[index].shape;
+     for(var j =0 ;j<target_face.length;j++){
+          var t_lat=target_face[j].split(':')[1];
+          var t_lng=target_face[j].split(':')[0];
+          draw_path.push(new QQMap.LatLng(t_lat,t_lng));
+     }
+      rectangle_ = new QQMap.Polygon({
+              path:draw_path,
+              strokeWeight: num,
+              fillColor:new qq.maps.Color(0, 0, 0, 0.1),
+              map: this.mapObj
+     });
+      rectangle_.setStrokeColor(data[index].color);
+      rectangle_.setVisible(true);
+      rectangle_.setMap(this.mapObj);
+       var classCode = data[index].class_code.substring(0,4);
+       if(classCode == 2616){
+          var cate = '商圈';
+       }else{
+          var cate = 'POI';
+       }
+      rectangle_.cate=cate;
+      rectangle_.i=index+1;
+      rectangle_.index_lat=data[index].point_y;
+      rectangle_.index_lng=data[index].point_x;
+      rectangle_.name=data[index].name;
+      rectangle_.time_c=data[index].time_count;
+      rectangle_arr_arr.push(rectangle_);
+      /*QQMap.event.addListener(rectangle_, 'rightclick', function() {
+           InfoWin.close();
+           InfoWin.open(); 
+           InfoWin.setContent('<p style="text-align:center;font-weight:700;">终点--'+this.cate+''+this.i+'</p><div style="text-align:left;white-space:nowrap;">名称:'+this.name+'<br/>排名：'+this.i+'<br/>热度：'+this.time_c+'</div>');
+           InfoWin.setPosition(new QQMap.LatLng(this.index_lat, this.index_lng));
+           setTimeout(function() {
+                InfoWin.close();
+            }, 5* 1000);
+       }); */
+   }
+      setTimeout(function() {
+           MapHelper.drawRectangle(data,index+1)
+        }, 300);
   };
 
   MapHelper.cleanPoi = function() {
@@ -499,6 +539,12 @@ MapHelper.drawRectangle = function(data) {
       rectangle_.setMap(null);
     });
     rectangle_arr = [];
+  };
+  MapHelper.cleanRect_arr = function() {
+    rectangle_arr_arr.forEach(function(rectangle_) {
+      rectangle_.setMap(null);
+    });
+    rectangle_arr_arr = [];
   };
 
   MapHelper.drawHeatMap = function(data) {

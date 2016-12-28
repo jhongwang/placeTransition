@@ -56,12 +56,13 @@
                       <table width="100%"  id="table_end">
                         <thead>
                            <tr>
-                             <th class="th_blue" colspan="3">出度</th>
+                             <th class="th_blue" colspan="4">出度<span id="chudu_num"></span></th>
                            </tr>
                            <tr>
                               <th>排名</th>
                               <th>名称</th>
                               <th>热度</th>
+                              <th>占比</th>
                            </tr>
                         </thead>
                         <tbody>
@@ -73,12 +74,13 @@
                  <table width="100%" class="table_right"  id="table_start">
                         <thead>
                            <tr>
-                             <th class="th_blue" colspan="3">入度</th>
+                             <th class="th_blue" colspan="4">入度<span id="rudu_num"></span></th>
                            </tr>
                            <tr>
                               <th>排名</th>
                               <th>名称</th>
                               <th>热度</th>
+                              <th>占比</th>
                            </tr>
                         </thead>
                         <tbody>
@@ -96,6 +98,7 @@
                <input class="input_icon" name="input_checkbox" id="icon_z" type="checkbox" checked value="终点" style="margin-left:12px;"/><label for="icon_z">终点</label>
           </div>
           <div id="root">
+                  <div id="hot_tuli"><span id="hot_min">0</span><img src="images/pc_bz.png" width="77px" height="38px" alt="" /><span id="hot_max">0</span></div>
                   <div id="ajax_tip">此定位点暂时没有相关数据哦。</div>
                   <div id="ajax_before_tip"><img src="images/load.jpg" width="80px" height="80px" alt="" /></div>
                   

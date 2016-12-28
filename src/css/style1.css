@@ -132,7 +132,10 @@ label{
     background-color: #2a8de2;
   color:#fff;
 }
-
+#nav table span{
+  font-size:10px;
+  font-family: Arial;
+}
 #nav table tbody tr td{
    border-right:1px solid #ccc;
    cursor: pointer;
@@ -276,6 +279,23 @@ table tr td{
   z-index: 9999;
   text-align: center;
   display: none;
+}
+#hot_tuli{
+  position: absolute;
+  left: 20px;
+  bottom: 50px;
+  z-index: 9999;
+}
+#hot_tuli span{
+  display: inline-block;
+  height: 38px;
+  line-height: 38px;
+  background-color: rgba(0,0,0,0.2);
+  color: #000;
+  vertical-align: top;
+  padding:0 8px;
+  font-weight: 700;
+
 }
 
 
