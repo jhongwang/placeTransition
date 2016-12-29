@@ -149,6 +149,13 @@ var data_get;//获取ajax获取下来的数据 这个只有展示不可给改
 var data_cur={};//把当前的从后台获取的数据放在这里 可以更改
 //var color_arr=['#ff0000','#ffb300','#d5ff00','#30ff00','#00ffec'];//从红到绿
 var color_arr=['#ff0000','#FFA500','#FFFF00','#32CD32','#48D1CC'];//从红到绿
+var color_arr_rgba={
+  '#ff0000':'255,0,0,0.4',
+  '#FFA500':'255,165,0,0.4',
+  '#FFFF00':'255,255,0,0.4',
+  '#32CD32':'50,255,50,0.4',
+  '#48D1CC':'72,209,204,0.4'
+};
 var hot_min;
 var hot_max;
 
@@ -318,11 +325,14 @@ function draw_data(){
 }
 
 function draw_marker(){
+   MapHelper.drawRectangle_arr(end_lists.slice(0,10));
+  MapHelper.drawRectangle(start_lists.slice(0,10));//起点
   creatTable_start(start_lists.slice(0,10),end_lists.slice(0,10));
   MapHelper.setMarkers_poi(start_lists.slice(0,10));//起点
   MapHelper.setMarkers_poi_radio(end_lists.slice(0,10));//终点
-  MapHelper.drawRectangle(start_lists.slice(0,10));//起点
-  MapHelper.drawRectangle_arr(end_lists.slice(0,10));
+  MapHelper.setAnimation_show();
+
+ 
  
  // MapHelper.drawPolyline(cur_lat,cur_lng,start_lists.slice(0,10),end_lists.slice(0,10));
 }
@@ -357,7 +367,7 @@ function creatTable_start(start_list,end_list){//
   var end_len = end_list.length;
   var iHtml = '';
   var iHtml2 = '';
-  for(var i = 0; i<10; i++){
+  for(var i = 0; i<10; i++){//入度的
      iHtml += '<tr>';
      if(start_len>10){
        iHtml += '<td>'+(i+1)+'</td>';
@@ -368,7 +378,7 @@ function creatTable_start(start_list,end_list){//
           iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="poi">P</i></td>';
        }
        iHtml += '<td>'+start_list[i].time_count+'</td>';
-       var time_count_avg=(start_list[i].time_count/data_get.start_count).toFixed(2);
+       var time_count_avg=(start_list[i].time_count/data_get.end_count).toFixed(3);
        iHtml += '<td>'+time_count_avg+'</td>';
      }else{
        if(i>start_len-1){
@@ -385,14 +395,14 @@ function creatTable_start(start_list,end_list){//
             iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="poi">P</i></td>';
          }
          iHtml += '<td>'+start_list[i].time_count+'</td>';
-         var time_count_avg=(start_list[i].time_count/data_get.start_count).toFixed(2);
+       var time_count_avg=(start_list[i].time_count/data_get.end_count).toFixed(3);
          iHtml += '<td>'+time_count_avg+'</td>';
        }
      }
      iHtml+='</tr>';
     
   }
-  for(var i = 0; i<10; i++){
+  for(var i = 0; i<10; i++){//出度的
      iHtml2 += '<tr>';
      if(end_len>10){
        iHtml2 += '<td>'+(i+1)+'</td>';
@@ -403,7 +413,7 @@ function creatTable_start(start_list,end_list){//
           iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="poi">P</i></td>';
        }
        iHtml2 += '<td>'+end_list[i].time_count+'</td>';
-        var time_count_avg=(end_list[i].time_count/data_get.end_count).toFixed(2);
+        var time_count_avg=(end_list[i].time_count/data_get.start_count).toFixed(3);
         iHtml2 += '<td>'+time_count_avg+'</td>';
      }else{
        if(i>end_len-1){
@@ -420,7 +430,7 @@ function creatTable_start(start_list,end_list){//
             iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="poi">P</i></td>';
          }
          iHtml2 += '<td>'+end_list[i].time_count+'</td>';
-          var time_count_avg=(end_list[i].time_count/data_get.end_count).toFixed(2);
+          var time_count_avg=(end_list[i].time_count/data_get.start_count).toFixed(3);
          iHtml2 += '<td>'+time_count_avg+'</td>';
        }
      }
@@ -444,7 +454,20 @@ function clear_alltd(){
      all_td[i].style.background='#fff';
   }
 }
-
+function clear_alltd1(m){
+  alert(m)
+  var all_td=document.getElementsByTagName('td');
+  for(var i=0;i<all_td.length;i++ ){
+     all_td[i].style.background='#fff';
+  }
+}
+function li_clicked_show(id,num){
+ clear_alltd();
+ var aLi=document.getElementById(id).tBodies[0].getElementsByTagName('tr');
+ for(var k=0;k<aLi[num].childNodes.length;k++){
+            aLi[num].childNodes[k].style.background='#eaeaea';
+ }
+}
 function li_click_start(id,len){
   var aLi=document.getElementById(id).tBodies[0].getElementsByTagName('tr');
   for(var i=0;i<len;i++){
