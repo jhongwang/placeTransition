@@ -325,12 +325,8 @@ function draw_data(){
 }
 
 function draw_marker(){
-   MapHelper.drawRectangle_arr(end_lists.slice(0,10));
-  MapHelper.drawRectangle(start_lists.slice(0,10));//起点
   creatTable_start(start_lists.slice(0,10),end_lists.slice(0,10));
-  MapHelper.setMarkers_poi(start_lists.slice(0,10));//起点
-  MapHelper.setMarkers_poi_radio(end_lists.slice(0,10));//终点
-  MapHelper.setAnimation_show();
+  
 
  
  
@@ -442,7 +438,12 @@ function creatTable_start(start_list,end_list){//
   li_click_start('table_start',start_len);
   li_click_end('table_end',end_len);
   tr_hei();
-}
+   MapHelper.drawRectangle_arr(end_lists.slice(0,10));
+  MapHelper.drawRectangle(start_lists.slice(0,10));//起点
+  MapHelper.setMarkers_poi(start_lists.slice(0,10));//起点
+  MapHelper.setMarkers_poi_radio(end_lists.slice(0,10));//终点
+  MapHelper.setAnimation_show();
+};
 function tr_hei(){
   var tr_height=($('#nav_table_box').height()-64)/10;
   var tr_height_=tr_height+'px';

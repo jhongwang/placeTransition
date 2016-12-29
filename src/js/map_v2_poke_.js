@@ -526,8 +526,11 @@ MapHelper.drawRectangle = function(data,index) {//起点
   };
   MapHelper.drawRectangle_arr = function(data,index) {//终点点
   //出度--终点--start_info--end_lists
-
-  var hot_avg = (hot_max-hot_min)/5+1;
+  
+  var hot_avg = parseInt((hot_max-hot_min)/5+1);
+  console.log(hot_max)
+  console.log(hot_min)
+  console.log(hot_avg)
   var draw_path=[];
   var index = index || 0;
   if(index==10){
@@ -536,6 +539,13 @@ MapHelper.drawRectangle = function(data,index) {//起点
   var num=2;
   if(data.length>0){
   var target=data[index].time_count;
+    console.log(data[index].name)
+    console.log(target)
+    console.log(hot_avg)
+    console.log(hot_min+hot_avg*4)
+    console.log(hot_min+hot_avg*3)
+    console.log(hot_min+hot_avg*2)
+    console.log(hot_min+hot_avg*1)
      if(target>=(hot_min+hot_avg*4)){
          data[index]['color']=color_arr[0];
      }else if(target>=(hot_min+hot_avg*3)){
@@ -549,6 +559,7 @@ MapHelper.drawRectangle = function(data,index) {//起点
      }
   
      var line_color=data[index].color;
+    console.log(line_color)
      var target_face=data[index].shape;
      for(var j =0 ;j<target_face.length;j++){
           var t_lat=target_face[j].split(':')[1];
