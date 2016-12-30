@@ -147,6 +147,8 @@ var cur_lng = 116.30752;//当前选择点的lng
 var cur_lat = 39.98406;//当前选择点的lat
 var data_get;//获取ajax获取下来的数据 这个只有展示不可给改
 var data_cur={};//把当前的从后台获取的数据放在这里 可以更改
+var timeout;
+var timeout1;
 //var color_arr=['#ff0000','#ffb300','#d5ff00','#30ff00','#00ffec'];//从红到绿
 var color_arr=['#ff0000','#FFA500','#FFFF00','#32CD32','#48D1CC'];//从红到绿
 var color_arr_rgba={
@@ -181,6 +183,7 @@ function checked_fun(){
         checkbox_selected.push($(this).context.value);
      }
    })
+   console.log(checkbox_selected)
    draw_data();
 }
 function cur_city_code(key){
@@ -253,6 +256,8 @@ function clearDitu(){
     MapHelper.cleanMarkers_poi_radio();
     MapHelper.cleanRect();
     MapHelper.cleanRect_arr();
+    clearTimeout(timeout);
+    clearTimeout(timeout1);
 }
 function clearTable(){
     $('#table_start tbody').html('');
@@ -267,69 +272,136 @@ function draw_data(){
     //入度--起点--end_info---start_lists
     //商圈 POI 起点 终点
     if(checkbox_selected.indexOf('起点') != -1){
-       if(checkbox_selected.indexOf('商圈') != -1 && checkbox_selected.indexOf('POI') != -1){
+       if(checkbox_selected.indexOf('商圈') != -1 && checkbox_selected.indexOf('POI') != -1 && checkbox_selected.indexOf('区域') != -1){
          var arr = data_cur.end_info;
           for(var i =0;i< arr.length; i++){
              start_lists.push(arr[i]);
           }
-       }else{
-         if(checkbox_selected.indexOf('商圈') != -1){
+       }else if(checkbox_selected.indexOf('商圈') != -1 && checkbox_selected.indexOf('区域') != -1){
+          var arr = data_cur.end_info;
+          for(var i =0;i< arr.length; i++){
+             if(arr[i].has_face&&arr[i].has_face==1){
+              start_lists.push(arr[i]);
+             }
+          }
+       }else if(checkbox_selected.indexOf('商圈') != -1 && checkbox_selected.indexOf('POI') != -1){
           var arr = data_cur.end_info;
           for(var i =0;i< arr.length; i++){
              var classCode = arr[i].class_code.substring(0,4);
-             if(classCode == 2616){
-                start_lists.push(arr[i]);
+             if(arr[i].has_face&&arr[i].has_face==1&&classCode!=2616){
+               continue;
+             }else{
+              start_lists.push(arr[i]);
              }
           }
-         }
-         if(checkbox_selected.indexOf('POI') != -1){
+       }
+       else if(checkbox_selected.indexOf('区域') != -1 && checkbox_selected.indexOf('POI') != -1){
           var arr = data_cur.end_info;
           for(var i =0;i< arr.length; i++){
              var classCode = arr[i].class_code.substring(0,4);
-             if(classCode != 2616){
-                start_lists.push(arr[i]);
+             if(arr[i].has_face&&arr[i].has_face==1&&classCode==2616){
+               continue;
+             }else{
+              start_lists.push(arr[i]);
              }
           }
-         }
+       }
+       else if(checkbox_selected.indexOf('商圈') != -1){
+          var arr = data_cur.end_info;
+          for(var i =0;i< arr.length; i++){
+             var classCode = arr[i].class_code.substring(0,4);
+             if(arr[i].has_face&&arr[i].has_face==1&&classCode==2616){
+               start_lists.push(arr[i]);
+             }
+          }
+       }
+       else if(checkbox_selected.indexOf('POI') != -1){
+          var arr = data_cur.end_info;
+          for(var i =0;i< arr.length; i++){
+             if(!arr[i].has_face||arr[i].has_face!=1){
+               start_lists.push(arr[i]);
+             }
+          }
+       }
+        else if(checkbox_selected.indexOf('区域') != -1){
+          var arr = data_cur.end_info;
+          for(var i =0;i< arr.length; i++){
+             var classCode = arr[i].class_code.substring(0,4);
+             if(arr[i].has_face&&arr[i].has_face==1&&classCode!=2616){
+               start_lists.push(arr[i]);
+             }
+          }
        }
        
     }
     if(checkbox_selected.indexOf('终点') != -1){
-       if(checkbox_selected.indexOf('商圈') != -1 && checkbox_selected.indexOf('POI') != -1){
+       if(checkbox_selected.indexOf('商圈') != -1 && checkbox_selected.indexOf('POI') != -1 && checkbox_selected.indexOf('区域') != -1){
          var arr = data_cur.start_info;
           for(var i =0;i< arr.length; i++){
              end_lists.push(arr[i]);
           }
-       }else{
-         if(checkbox_selected.indexOf('商圈') != -1){
+       }else if(checkbox_selected.indexOf('商圈') != -1 && checkbox_selected.indexOf('区域') != -1){
+          var arr = data_cur.start_info;
+          for(var i =0;i< arr.length; i++){
+             if(arr[i].has_face&&arr[i].has_face==1){
+              end_lists.push(arr[i]);
+             }
+          }
+       }else if(checkbox_selected.indexOf('商圈') != -1 && checkbox_selected.indexOf('POI') != -1){
           var arr = data_cur.start_info;
           for(var i =0;i< arr.length; i++){
              var classCode = arr[i].class_code.substring(0,4);
-             if(classCode == 2616){
-                end_lists.push(arr[i]);
+             if(arr[i].has_face&&arr[i].has_face==1&&classCode!=2616){
+               continue;
+             }else{
+              end_lists.push(arr[i]);
              }
           }
-         }
-         if(checkbox_selected.indexOf('POI') != -1){
-          var arr = data_cur.start_info;
-          for(var i =0;i< arr.length; i++){
-             var classCode = arr[i].class_code.substring(0,4);
-             if(classCode != 2616){
-                end_lists.push(arr[i]);
-             }
-          }
-         }
        }
+       else if(checkbox_selected.indexOf('区域') != -1 && checkbox_selected.indexOf('POI') != -1){
+          var arr = data_cur.start_info;
+          for(var i =0;i< arr.length; i++){
+             var classCode = arr[i].class_code.substring(0,4);
+             if(arr[i].has_face&&arr[i].has_face==1&&classCode==2616){
+               continue;
+             }else{
+              end_lists.push(arr[i]);
+             }
+          }
+       }
+       else if(checkbox_selected.indexOf('商圈') != -1){
+          var arr = data_cur.start_info;
+          for(var i =0;i< arr.length; i++){
+             var classCode = arr[i].class_code.substring(0,4);
+             if(arr[i].has_face&&arr[i].has_face==1&&classCode==2616){
+               end_lists.push(arr[i]);
+             }
+          }
+       }
+       else if(checkbox_selected.indexOf('POI') != -1){
+          var arr = data_cur.start_info;
+          for(var i =0;i< arr.length; i++){
+             if(!arr[i].has_face||arr[i].has_face!=1){
+               end_lists.push(arr[i]);
+             }
+          }
+       }
+        else if(checkbox_selected.indexOf('区域') != -1){
+          var arr = data_cur.start_info;
+          for(var i =0;i< arr.length; i++){
+             var classCode = arr[i].class_code.substring(0,4);
+             if(arr[i].has_face&&arr[i].has_face==1&&classCode!=2616){
+               end_lists.push(arr[i]);
+             }
+          }
+       }
+       
     }
   draw_marker();
 }
 
 function draw_marker(){
   creatTable_start(start_lists.slice(0,10),end_lists.slice(0,10));
-  
-
- 
- 
  // MapHelper.drawPolyline(cur_lat,cur_lng,start_lists.slice(0,10),end_lists.slice(0,10));
 }
 function creatTable_start(start_list,end_list){//
@@ -367,12 +439,17 @@ function creatTable_start(start_list,end_list){//
      iHtml += '<tr>';
      if(start_len>10){
        iHtml += '<td>'+(i+1)+'</td>';
-       var classCode = start_list[i].class_code.substring(0,4);
-       if(classCode == 2616){
-          iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="shang">B</i></td>';
+       if(start_list[i].has_face&&start_list[i].has_face==1){
+          var classCode = start_list[i].class_code.substring(0,4);
+          if(classCode == 2616){
+              iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="icon_l shang">B</i></td>';
+           }else{
+              iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="icon_l quyu">D</i></td>';
+           }
        }else{
-          iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="poi">P</i></td>';
+              iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="icon_l poi">P</i></td>';
        }
+       
        iHtml += '<td>'+start_list[i].time_count+'</td>';
        var time_count_avg=(start_list[i].time_count/data_get.end_count).toFixed(3);
        iHtml += '<td>'+time_count_avg+'</td>';
@@ -385,13 +462,18 @@ function creatTable_start(start_list,end_list){//
        }else{
          iHtml += '<td>'+(i+1)+'</td>';
          var classCode = start_list[i].class_code.substring(0,4);
-         if(classCode == 2616){
-            iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="shang">B</i></td>';
+         if(start_list[i].has_face&&start_list[i].has_face==1){
+          var classCode = start_list[i].class_code.substring(0,4);
+          if(classCode == 2616){
+              iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="icon_l shang">B</i></td>';
+           }else{
+                iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="icon_l quyu">D</i></td>';
+           }
          }else{
-            iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="poi">P</i></td>';
+              iHtml += '<td>'+start_list[i].name+'&nbsp;<i class="icon_l poi">P</i></td>';
          }
          iHtml += '<td>'+start_list[i].time_count+'</td>';
-       var time_count_avg=(start_list[i].time_count/data_get.end_count).toFixed(3);
+        var time_count_avg=(start_list[i].time_count/data_get.end_count).toFixed(3);
          iHtml += '<td>'+time_count_avg+'</td>';
        }
      }
@@ -402,11 +484,16 @@ function creatTable_start(start_list,end_list){//
      iHtml2 += '<tr>';
      if(end_len>10){
        iHtml2 += '<td>'+(i+1)+'</td>';
-       var classCode = end_list[i].class_code.substring(0,4);
-       if(classCode == 2616){
-          iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="shang">B</i></td>';
+       if(end_list[i].has_face&&end_list[i].has_face==1){
+          var classCode = end_list[i].class_code.substring(0,4);
+          if(classCode == 2616){
+              iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="icon_l shang">B</i></td>';
+           }else{
+              iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="icon_l quyu">D</i></td>';
+           }
        }else{
-          iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="poi">P</i></td>';
+               console.log(end_list[i])
+              iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="icon_l poi">P</i></td>';
        }
        iHtml2 += '<td>'+end_list[i].time_count+'</td>';
         var time_count_avg=(end_list[i].time_count/data_get.start_count).toFixed(3);
@@ -419,11 +506,15 @@ function creatTable_start(start_list,end_list){//
          iHtml2 += '<td>&nbsp;</td>';
        }else{
          iHtml2 += '<td>'+(i+1)+'</td>';
-         var classCode = end_list[i].class_code.substring(0,4);
-         if(classCode == 2616){
-            iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="shang">B</i></td>';
+         if(end_list[i].has_face&&end_list[i].has_face==1){
+          var classCode = end_list[i].class_code.substring(0,4);
+          if(classCode == 2616){
+              iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="icon_l shang">B</i></td>';
+           }else{
+                iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="icon_l quyu">D</i></td>';
+           }
          }else{
-            iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="poi">P</i></td>';
+              iHtml2 += '<td>'+end_list[i].name+'&nbsp;<i class="icon_l poi">P</i></td>';
          }
          iHtml2 += '<td>'+end_list[i].time_count+'</td>';
           var time_count_avg=(end_list[i].time_count/data_get.start_count).toFixed(3);
@@ -438,14 +529,14 @@ function creatTable_start(start_list,end_list){//
   li_click_start('table_start',start_len);
   li_click_end('table_end',end_len);
   tr_hei();
-   MapHelper.drawRectangle_arr(end_lists.slice(0,10));
+  MapHelper.drawRectangle_arr(end_lists.slice(0,10));
   MapHelper.drawRectangle(start_lists.slice(0,10));//起点
   MapHelper.setMarkers_poi(start_lists.slice(0,10));//起点
   MapHelper.setMarkers_poi_radio(end_lists.slice(0,10));//终点
   MapHelper.setAnimation_show();
 };
 function tr_hei(){
-  var tr_height=($('#nav_table_box').height()-64)/10;
+  var tr_height=($('#nav_table_box').height()-79)/10;
   var tr_height_=tr_height+'px';
   $('#nav_table_box table tbody tr').css('height',tr_height_);
 }

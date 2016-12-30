@@ -132,9 +132,18 @@ label{
     background-color: #2a8de2;
   color:#fff;
 }
+ #nav table th{
+  min-width:30px;
+} 
 #nav table span{
   font-size:10px;
   font-family: Arial;
+}
+#nav table span.th_tip{
+  font-family: 'Microsoft Yahei';
+  font-weight: 400;
+  color:#F0F8FF;
+  display: block;
 }
 #nav table tbody tr td{
    border-right:1px solid #ccc;
@@ -350,10 +359,7 @@ table tr td{
   cursor: pointer;
 }
 
-
-i.shang{
-  background:#f47920;
-  margin-right:8px;
+i.icon_l{
   color:#fff;
   font-style:normal;
   display:inline-block;
@@ -365,16 +371,14 @@ i.shang{
   font-size:10px;
   font-family: Arial;
 }
+i.shang{
+  background:#f47920;
+  margin-right:8px;
+}
 i.poi{
   background:#009ad6;
-  color:#fff;
-  font-style:normal;
-  display:inline-block;
-  height:12px;
-  width:12px;
-  border-radius:2px;
-  text-align:center;
-  line-height:12px;
-  font-size:10px;
-  font-family: Arial;
+}
+i.quyu{
+  background:#FF1493;
+  margin-right:8px;
 }

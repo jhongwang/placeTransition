@@ -48,15 +48,16 @@
    <div id="poi_m">
        <div class="poi_m_l" id="nav">
           <div class="nav_float">
-               <input class="input_icon" name="input_checkbox" type="checkbox" id="icon_s" value="商圈" checked/><label for="icon_s">商圈</label>&nbsp;<i class="shang">B</i>
-               <input class="input_icon" name="input_checkbox" type="checkbox" id="icon_p" value="POI" checked style="margin-left:12px;"/><label for="icon_p">POI</label>&nbsp;<i class="poi">P</i>
+               <input class="input_icon" name="input_checkbox" type="checkbox" id="icon_s" value="商圈" checked/><label for="icon_s">商圈</label>&nbsp;<i class="icon_l shang">B</i>
+               <input class="input_icon" name="input_checkbox" type="checkbox" id="icon_d" value="区域" checked style="margin-left:12px;"/><label for="icon_s">有名区域</label>&nbsp;<i class="icon_l quyu">D</i>
+               <input class="input_icon" name="input_checkbox" type="checkbox" id="icon_p" value="POI" checked style="margin-left:12px;"/><label for="icon_p">POI</label>&nbsp;<i class="icon_l poi">P</i>
           </div>
           <div id="nav_table_box">
               <div class="nav_con clearfix">
                       <table width="100%"  id="table_end">
                         <thead>
                            <tr>
-                             <th class="th_blue" colspan="4">出度<span id="chudu_num"></span></th>
+                             <th class="th_blue" colspan="4">出度&nbsp;<span id="chudu_num"></span><span class="th_tip">(查询点--终点)</span></th>
                            </tr>
                            <tr>
                               <th>排名</th>
@@ -74,7 +75,7 @@
                  <table width="100%" class="table_right"  id="table_start">
                         <thead>
                            <tr>
-                             <th class="th_blue" colspan="4">入度<span id="rudu_num"></span></th>
+                             <th class="th_blue" colspan="4">入度&nbsp;<span id="rudu_num"></span><span class="th_tip">(起点--查询点)</span></th>
                            </tr>
                            <tr>
                               <th>排名</th>

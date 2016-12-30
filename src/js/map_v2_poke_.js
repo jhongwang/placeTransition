@@ -7,7 +7,8 @@
   var markers_poi_=[];
   var markers_poi_radio=[];
   var circle_;
-  var radius_ = 2000;
+  var circle_arr=[];
+  var radius_ = 1000;
   var rectangle_;
   var rectangle2_;
   var rectangle_arr=[];
@@ -203,12 +204,17 @@ MapHelper.setMarkers_poi = function(arr) {//画起点的--入度的--startinfo
         var time_c=poi_arr[i].time_count;
         var md = poi_arr[i].md;
         var num=i+1;
-         var classCode = poi_arr[i].class_code.substring(0,4);
-         if(classCode == 2616){
-            var cate = '商圈';
-         }else{
-            var cate = 'POI';
-         }
+        if(poi_arr[i].has_face&&poi_arr[i].has_face==1){
+           var classCode = poi_arr[i].class_code.substring(0,4);
+           if(classCode == 2616){
+              var cate = '商圈';
+           }else{
+              var cate = '有名区域';
+           }
+        }else{
+             var cate = 'POI';
+        }
+         
         marker_position= new QQMap.LatLng(lat, lng);
         var marker_poi = new QQMap.Marker({
             position: marker_position,
@@ -260,12 +266,16 @@ MapHelper.setMarkers_poi_radio = function(arr) {
         var time_c=poi_arr[i].time_count;
         var md = poi_arr[i].md;
         var num=i+1;
-        var classCode = poi_arr[i].class_code.substring(0,4);
-         if(classCode == 2616){
-            var cate = '商圈';
-         }else{
-            var cate = 'POI';
-         }
+        if(poi_arr[i].has_face&&poi_arr[i].has_face==1){
+           var classCode = poi_arr[i].class_code.substring(0,4);
+           if(classCode == 2616){
+              var cate = '商圈';
+           }else{
+              var cate = '有名区域';
+           }
+        }else{
+             var cate = 'POI';
+        }
         marker_position= new QQMap.LatLng(lat, lng);
         var marker_poi = new QQMap.Marker({
             position: marker_position,
@@ -300,7 +310,7 @@ MapHelper.setMarkers_poi_radio = function(arr) {
          var marker=markers_poi_radio[i];
          marker.index=i;
          QQMap.event.addListener(marker, 'click', function() {
-            MapHelper.set_poi_animation_radio(this.index);
+             MapHelper.set_poi_animation_radio(this.index);
              li_clicked_show('table_end',this.index);
         }); 
       }
@@ -309,7 +319,7 @@ MapHelper.setMarkers_poi_radio = function(arr) {
          marker.index=i;
          QQMap.event.addListener(marker, 'click', function() {
             MapHelper.set_poi_animation(this.index);
-              li_clicked_show('table_start',this.index);
+            li_clicked_show('table_start',this.index);
         }); 
       }
   }
@@ -328,15 +338,22 @@ MapHelper.setMarkers_poi_radio = function(arr) {
        rectangle_arr[i].setZIndex(9);
        rectangle_arr[i].setStrokeWeight(2);
        rectangle_arr[i].setStrokeDashStyle('solid');
-       rectangle_arr[i].setFillColor(new qq.maps.Color(0, 0, 0, 0.1));
+       if(rectangle_arr[i].cate!="POI"){
+        rectangle_arr[i].setFillColor(new qq.maps.Color(0, 0, 0, 0.1));
+       }else{
+        rectangle_arr[i].setFillColor(new qq.maps.Color(0, 0, 255, 0.1));
+       }
 
     }
     for(var i=0;i<rectangle_arr_arr.length;i++){
        rectangle_arr_arr[i].setZIndex(9);
        rectangle_arr_arr[i].setStrokeWeight(2);
        rectangle_arr_arr[i].setStrokeDashStyle('solid');
+       if(rectangle_arr_arr[i].cate!="POI"){
        rectangle_arr_arr[i].setFillColor(new qq.maps.Color(0, 0, 0, 0.1));
-
+       }else{
+       rectangle_arr_arr[i].setFillColor(new qq.maps.Color(0, 0, 255, 0.1));
+       }
     }
 
     markers_poi_[num].setAnimation(QQMap.MarkerAnimation.BOUNCE);
@@ -349,6 +366,7 @@ MapHelper.setMarkers_poi_radio = function(arr) {
     
   };
   MapHelper.set_poi_animation_radio = function(num) {//终点
+    console.log(num)
     //出度--终点--start_info--end_lists
     for(var i=0;i<markers_poi_radio.length;i++){
        markers_poi_radio[i].setAnimation(null);
@@ -362,13 +380,22 @@ MapHelper.setMarkers_poi_radio = function(arr) {
        rectangle_arr[i].setZIndex(9);
        rectangle_arr[i].setStrokeWeight(2);
        rectangle_arr[i].setStrokeDashStyle('solid');
+       if(rectangle_arr[i].cate!="POI"){
         rectangle_arr[i].setFillColor(new qq.maps.Color(0, 0, 0, 0.1));
+       }else{
+        rectangle_arr[i].setFillColor(new qq.maps.Color(0, 0, 255, 0.1));
+       }
     }
     for(var i=0;i<rectangle_arr_arr.length;i++){
        rectangle_arr_arr[i].setZIndex(9);
        rectangle_arr_arr[i].setStrokeWeight(2);
        rectangle_arr_arr[i].setStrokeDashStyle('solid');
+       console.log(rectangle_arr_arr[i])
+       if(rectangle_arr_arr[i].cate!="POI"){
        rectangle_arr_arr[i].setFillColor(new qq.maps.Color(0, 0, 0, 0.1));
+       }else{
+       rectangle_arr_arr[i].setFillColor(new qq.maps.Color(0, 0, 255, 0.1));
+       }
     }
    markers_poi_radio[num].setAnimation(QQMap.MarkerAnimation.BOUNCE);
    markers_poi_radio[num].setZIndex(9999);
@@ -400,19 +427,19 @@ MapHelper.setMarkers_poi_radio = function(arr) {
   };
 
 
-  MapHelper.setCircle = function(lat, lng, radius) {
+  MapHelper.setCircle = function(lat, lng) {
     var center = new QQMap.LatLng(lat, lng);
     circle_ = new QQMap.Circle({
       map: this.mapObj,
       center: center,
-      radius: radius,
+      radius: radius_,
       fillColor: "#00f",
       fillOpacity: 0.3,
       strokeWeight: 2
     });
     circle_.setVisible(true);
     circle_.setMap(this.mapObj);
-    radius_ = radius;
+    circle_arr.push(circle_);
   };
 
   MapHelper.cleanCircle = function() {
@@ -461,12 +488,13 @@ MapHelper.drawRectangle = function(data,index) {//起点
   var hot_avg = (hot_max-hot_min)/5+1;
   var draw_path=[];
   var index = index || 0;
-  if(index==10){
+  if(index==data.length||index==10){
     return false;
   }
+  console.log('time_count错误问题')
+  console.log(data)
+  var num=2;
   if(data.length>0){
-
-
   var target=data[index].time_count;
 
      if(target>=(hot_min+hot_avg*4)){
@@ -488,21 +516,36 @@ MapHelper.drawRectangle = function(data,index) {//起点
           var t_lng=target_face[j].split(':')[0];
           draw_path.push(new QQMap.LatLng(t_lat,t_lng));
      }
-      rectangle_ = new QQMap.Polygon({
+     if(data[index].has_face&&data[index].has_face==1){
+       rectangle_ = new QQMap.Polygon({
               path:draw_path,
-              strokeWeight: 2,
+              strokeWeight: num,
               fillColor:new qq.maps.Color(0, 0, 0, 0.1),
               map: this.mapObj
-     });
+       });
+     }else{
+       rectangle_ = new QQMap.Circle({
+          map: this.mapObj,
+          center: new QQMap.LatLng(data[index].point_y,data[index].point_x),
+          radius: radius_,
+          fillColor: new qq.maps.Color(0, 0, 255, 0.1),
+          strokeWeight: num
+        });
+     }
       rectangle_.setStrokeColor(data[index].color);
       rectangle_.setVisible(true);
       rectangle_.setMap(this.mapObj);
-      var classCode = data[index].class_code.substring(0,4);
-       if(classCode == 2616){
-          var cate = '商圈';
-       }else{
-          var cate = 'POI';
-       }
+      if(data[index].has_face&&data[index].has_face==1){
+           var classCode = data[index].class_code.substring(0,4);
+           if(classCode == 2616){
+              var cate = '商圈';
+           }else{
+              var cate = '有名区域';
+           }
+        }else{
+             var cate = 'POI';
+        }
+         
       rectangle_.cate=cate;
       rectangle_.i=index+1;
       rectangle_.index_lat=data[index].point_y;
@@ -520,32 +563,22 @@ MapHelper.drawRectangle = function(data,index) {//起点
             }, 5* 1000);
        }); */
   }
-      setTimeout(function() {
+      timeout=setTimeout(function() {
            MapHelper.drawRectangle(data,index+1)
         }, 300);
   };
   MapHelper.drawRectangle_arr = function(data,index) {//终点点
   //出度--终点--start_info--end_lists
   
-  var hot_avg = parseInt((hot_max-hot_min)/5+1);
-  console.log(hot_max)
-  console.log(hot_min)
-  console.log(hot_avg)
+  var hot_avg = (hot_max-hot_min)/5+1;
   var draw_path=[];
   var index = index || 0;
-  if(index==10){
+   if(index==data.length||index==10){
     return false;
   }
   var num=2;
   if(data.length>0){
   var target=data[index].time_count;
-    console.log(data[index].name)
-    console.log(target)
-    console.log(hot_avg)
-    console.log(hot_min+hot_avg*4)
-    console.log(hot_min+hot_avg*3)
-    console.log(hot_min+hot_avg*2)
-    console.log(hot_min+hot_avg*1)
      if(target>=(hot_min+hot_avg*4)){
          data[index]['color']=color_arr[0];
      }else if(target>=(hot_min+hot_avg*3)){
@@ -559,28 +592,43 @@ MapHelper.drawRectangle = function(data,index) {//起点
      }
   
      var line_color=data[index].color;
-    console.log(line_color)
      var target_face=data[index].shape;
      for(var j =0 ;j<target_face.length;j++){
           var t_lat=target_face[j].split(':')[1];
           var t_lng=target_face[j].split(':')[0];
           draw_path.push(new QQMap.LatLng(t_lat,t_lng));
      }
-      rectangle2_ = new QQMap.Polygon({
+     if(data[index].has_face&&data[index].has_face==1){
+       rectangle2_ = new QQMap.Polygon({
               path:draw_path,
               strokeWeight: num,
               fillColor:new qq.maps.Color(0, 0, 0, 0.1),
               map: this.mapObj
-     });
+       });
+     }else{
+       rectangle2_ = new QQMap.Circle({
+          map: this.mapObj,
+          center: new QQMap.LatLng(data[index].point_y,data[index].point_x),
+          radius: radius_,
+          fillColor: new qq.maps.Color(0, 0, 255, 0.1),
+          strokeWeight: num
+        });
+     }
+      
       rectangle2_.setStrokeColor(data[index].color);
       rectangle2_.setVisible(true);
       rectangle2_.setMap(this.mapObj);
-       var classCode = data[index].class_code.substring(0,4);
-       if(classCode == 2616){
-          var cate = '商圈';
-       }else{
-          var cate = 'POI';
-       }
+      if(data[index].has_face&&data[index].has_face==1){
+           var classCode = data[index].class_code.substring(0,4);
+           if(classCode == 2616){
+              var cate = '商圈';
+           }else{
+              var cate = '有名区域';
+           }
+        }else{
+             var cate = 'POI';
+        }
+         
       rectangle2_.cate=cate;
       rectangle2_.i=index+1;
       rectangle2_.index_lat=data[index].point_y;
@@ -598,7 +646,7 @@ MapHelper.drawRectangle = function(data,index) {//起点
             }, 5* 1000);
        }); */
    }
-      setTimeout(function() {
+      timeout1=setTimeout(function() {
            MapHelper.drawRectangle_arr(data,index+1)
         }, 300);
   };
