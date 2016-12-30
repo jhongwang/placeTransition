@@ -243,6 +243,9 @@ table tr td{
 #tuli span{
   vertical-align: middle;
 }
+#tuli font{
+  font-size:10px;
+}
 #tuli span.icon_guai{
   vertical-align: top;
 }
