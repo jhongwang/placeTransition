@@ -16,6 +16,7 @@
   var polyline_arr=[];
   var polyline_arr2=[];
   var InfoWin;
+  var line_arr=[];
   
   if (!Array.prototype.forEach)
     Array.prototype.forEach = function(fn) {
@@ -77,11 +78,15 @@ MapHelper.searchService = function(){
 
   MapHelper.initMap = function(center) {
     var mapObj = new QQMap.Map(root, {
-      zoom: 12,
+      zoom: 13,
       center: center,
       draggable: true,
       scrollwheel: true,
-      disableDoubleClickZoom: false
+      disableDoubleClickZoom: false,
+      mapTypeControl: false,
+      scaleControl: false,
+      zoomControl: false,
+      panControl: false
     });
     this.mapObj = mapObj;
     this.bindEventHandler();
@@ -134,7 +139,10 @@ MapHelper.searchService = function(){
   MapHelper.setRadius = function(radius) {
     radius_ = radius;
   };
-
+ 
+  MapHelper.setPanby = function(){
+    this.mapObj.panBy(-1, 0);
+  }
   MapHelper.setCenter = function(lat, lng) {
     this.mapObj.setCenter(new QQMap.LatLng(lat, lng));
   };
@@ -179,8 +187,71 @@ MapHelper.drawPolyline = function(lat,lng,start_data,end_data){
     });
     polyline_arr2.push(polyline);
  }
- 
 }
+MapHelper.drawLine = function(ori_name1,datas){//poi_arr 入度起点红色  出度endlist的绿色的 
+  
+    var currentId = ori_name1;
+    var mainColor = '#00f';
+    var radi = new QQMap.plugin.Radiation({
+        //配置地图
+        map: this.mapObj,
+
+        //初始显示的数据
+        data: datas[currentId],
+
+        //配置样式
+        style: {
+            //弧线宽度，单位px
+            lineWidth: 1,
+            //弧线颜色
+            lineColor: mainColor,
+            //高亮点颜色
+            highlightColor: '#ffffff',
+            //高亮点后的tail颜色
+            tailColor: mainColor,
+            //文字颜色
+            textColor: '#fff',
+            //文字大小
+            textSize: '12px',
+            //字体
+            textFont: '微软雅黑',
+            //饼状图颜色
+            panColor: mainColor,
+            //饼状图半径，单位px
+            radius: 10
+        },
+
+        //点击城市对应位置的回调函数
+      /*  onPointClick: function(e){
+            console.info(e);
+            if(e.id==ori_name1){
+                if(currentId == ori_name1){
+                    radi.setData(datas[e.id]);
+                }else{
+                    radi.setData(datas[ori_name1]);
+                    currentId = ori_name1;
+                    return;
+                }
+            }else{
+                if(datas[e.id]){
+                    radi.setData(datas[e.id]);
+                }
+            }
+            currentId = e.id;
+        },*/
+        // onLineClick: function(e){
+        //     alert(['Click link: from ',e.from.id,' to ',e.to.id].join(''));            
+        // }
+        
+    });
+    console.log(radi)
+    line_arr.push(radi);
+    console.log('shou')
+    /*setTimeout(function(){
+      MapHelper.setZoom(14);
+    },2000)*/
+}
+
 MapHelper.setMarkers_poi = function(arr) {//画起点的--入度的--startinfo
        var anchorb = new QQMap.Point(12,24),
         sizeb = new QQMap.Size(20, 30),
@@ -401,7 +472,6 @@ MapHelper.setMarkers_poi_radio = function(arr) {
        rectangle_arr_arr[i].setZIndex(9);
        rectangle_arr_arr[i].setStrokeWeight(2);
        rectangle_arr_arr[i].setStrokeDashStyle('solid');
-       console.log(rectangle_arr_arr[i])
        if(rectangle_arr_arr[i].cate!="POI"){
        rectangle_arr_arr[i].setFillColor(new qq.maps.Color(0, 0, 0, 0.1));
        }
@@ -431,9 +501,13 @@ MapHelper.setMarkers_poi_radio = function(arr) {
   };
    MapHelper.cleanMarkers_poi_radio = function() {
     markers_poi_radio.forEach(function(marker) {
+      console.log(marker)
       marker.setMap(null);
     });
     markers_poi_radio= [];
+  };
+  MapHelper.cleanLine = function() {
+    line_arr= [];
   };
 
 

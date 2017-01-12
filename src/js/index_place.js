@@ -98,7 +98,11 @@ $('#ui-id-1 li').mouseover(function(){
                                     $('#ui-id-1 li').eq(i).attr('class','');
                                     $('#ui-id-1 li').eq(i).addClass(title_list[i].id);
                                     var title = title_list[i].title;
-                                    var category = title_list[i].category.split(':').pop();
+                                    if(title_list[i].category){
+                                       var category = title_list[i].category.split(':').pop();
+                                    }else{
+                                       var category = '';
+                                    }
                                     var address = title_list[i].ad_info.province+'-'+title_list[i].ad_info.city+'-'+title_list[i].ad_info.district;
                                     $('#ui-id-1 li').eq(i).html(""+title+"<span>&nbsp;【"+category+"】</span><span>【"+address+"】</span><em>"+title_list[i].location.lat+','+title_list[i].location.lng+"</em>");
                                  } 
@@ -256,6 +260,10 @@ function clearDitu(){
     MapHelper.cleanMarkers_poi_radio();
     MapHelper.cleanRect();
     MapHelper.cleanRect_arr();
+    MapHelper.cleanLine();
+    if(document.getElementById('root')&&document.getElementById('root').getElementsByTagName('canvas').length>0){
+     document.getElementById('root').getElementsByTagName('canvas')[0].parentNode.remove();
+    }
     clearTimeout(timeout);
     clearTimeout(timeout1);
 }
@@ -402,7 +410,44 @@ function draw_data(){
 
 function draw_marker(){
   creatTable_start(start_lists.slice(0,10),end_lists.slice(0,10));
- // MapHelper.drawPolyline(cur_lat,cur_lng,start_lists.slice(0,10),end_lists.slice(0,10));
+  var poi_arr=start_lists.slice(0,10);
+  var endlist=end_lists.slice(0,10);
+  var ori_name1='中心点'+cur_md_name;
+  var points = {};
+  points[ori_name1]={"lat":cur_lat,"lng":cur_lng,"targ":0};
+  for(var i=0;i<poi_arr.length;i++){
+      var lng=poi_arr[i].point_x;
+      var lat=poi_arr[i].point_y;
+      var name=poi_arr[i].name;
+
+      points[name]={"lat":lat,"lng":lng,"targ":1};//poi_arr 入度起点红色
+  }
+  for(var i=0;i<endlist.length;i++){
+      var lng=endlist[i].point_x;
+      var lat=endlist[i].point_y;
+      var name=endlist[i].name+'_';
+      console.log(lat)
+      points[name]={"lat":lat,"lng":lng,"targ":2};
+  }
+  
+  console.log(points)
+   var linksValue = [];
+   for(var key in points){
+      if(key!=ori_name1&&points[key]["targ"]==1){
+         linksValue.push({from:{id:key},to:{id:ori_name1}})
+      }
+       if(key!=ori_name1&&points[key]["targ"]==2){
+         linksValue.push({from:{id:ori_name1},to:{id:key}})
+      }
+   }
+   console.log(linksValue)
+   var datas={};
+   datas[ori_name1]={
+     points: points, 
+     links:linksValue
+   }
+    MapHelper.drawLine(ori_name1,datas);//起点--入度--startlist
+
 }
 function creatTable_start(start_list,end_list){//
     //出度--终点--start_info--end_lists
@@ -539,6 +584,7 @@ function tr_hei(){
   var tr_height=($('#nav_table_box').height()-79)/10;
   var tr_height_=tr_height+'px';
   $('#nav_table_box table tbody tr').css('height',tr_height_);
+  MapHelper.setPanby();
 }
 function clear_alltd(){
   var all_td=document.getElementsByTagName('td');
