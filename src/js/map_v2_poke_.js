@@ -141,7 +141,7 @@ MapHelper.searchService = function(){
   };
  
   MapHelper.setPanby = function(){
-    this.mapObj.panBy(-1, 0);
+    this.mapObj.panBy(-0.0000001, 0);
   }
   MapHelper.setCenter = function(lat, lng) {
     this.mapObj.setCenter(new QQMap.LatLng(lat, lng));
